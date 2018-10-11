@@ -32,7 +32,7 @@ public class CategoryDao {
     public HashMap<CategoryEntity, ArrayList<CategoryEntity>> getCategoryList() {
         HashMap<CategoryEntity, ArrayList<CategoryEntity>> hashMap = new HashMap<>();
         
-        String sql1 = "select id, name, parent from Categogy where status=1 and parent=0 order by id ASC";
+        String sql1 = "select id, name, parent from Category where status=1 and parent=0 order by id ASC";
         ArrayList<CategoryEntity> cateLever1 = new ArrayList<>();
         try {
             Statement sta = conn.createStatement();
@@ -48,7 +48,7 @@ public class CategoryDao {
             Logger.getLogger(CategoryDao.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String sql2 = "select id, name, parent from Categogy where status=1 and parent=? order by id ASC";
+        String sql2 = "select id, name, parent from Category where status=1 and parent=? order by id ASC";
         for (CategoryEntity c : cateLever1) {
             try {
                 PreparedStatement pre = conn.prepareStatement(sql2);
@@ -67,5 +67,20 @@ public class CategoryDao {
             }
         }
         return hashMap;
+    }
+    
+    public String getNameById(String id) {
+        String sql = "select name from Category where id=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, id);
+            ResultSet rs = pre.executeQuery();
+            while(rs.next()) {
+                return rs.getNString("name");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

@@ -16,6 +16,7 @@
 <% ArrayList<ProductEntity> productEntities = (ArrayList<ProductEntity>) request.getAttribute("productEntities"); %>
 <% CustomerEntity customerEntity = (CustomerEntity) request.getAttribute("customer"); %>
 <% String statusLogin = (String) request.getAttribute("statusLogin"); %>
+<% String category = (String) request.getAttribute("category"); %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -162,7 +163,7 @@
                             <div class="dropdown-menu">
                                 <% ArrayList<CategoryEntity> categoryEntitys = (ArrayList<CategoryEntity>) m.getValue(); %>
                                 <% for (CategoryEntity c : categoryEntitys) {%>
-                                <a class="dropdown-item" href="category?categoryId=<%= c.getId() %>"><%= c.getName()%></a>
+                                <a class="dropdown-item" href="category?categoryId=<%= c.getId()%>"><%= c.getName()%></a>
                                 <% } %>
                             </div>
                         </div>
@@ -173,7 +174,16 @@
                     </div>
                 </div>
             </div>
-            <h3><i class="fas fa-calendar-alt"></i> Sản phẩm mới cập nhật</h3>
+            <div class="grid-category">
+                <h3><i class="fas fa-calendar-alt"></i> <%= category%></h3>
+                <select class="form-control" onchange="sortProduct()" id="sort-product">
+                    <option value="none">Sắp xếp theo sản phẩm</option>
+                    <option value="priceASC">Giá (Thấp > Cao)</option>
+                    <option value="priceDESC">Giá (Cao > Thấp)</option>
+                    <option value="nameASC">Tên (A > Z)</option>
+                    <option value="nameDESC">Tên (Z > A)</option>
+                </select>
+            </div>
             <div class="grid-2">
                 <% for (ProductEntity entity : productEntities) {%>
                 <div class="product-box">
@@ -203,63 +213,84 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script>
-        function autoHeightLogo() {
-            var total_catalog_item = $("#catalog>div").length;
-            var height = 48 * total_catalog_item;
-            $(".img-logo1").height(height);
-        }
+                    function autoHeightLogo() {
+                        var total_catalog_item = $("#catalog>div").length;
+                        var height = 48 * total_catalog_item;
+                        $(".img-logo1").height(height);
+                    }
 
-        autoHeightLogo();
+                    autoHeightLogo();
 
-        function notify(title, message) {
-            $("#notifyModal .modal-title").html(title);
-            $("#notifyModal .modal-body").html(message);
-            $("#notifyModal").modal({backdrop: "static"});
-        }
+                    function notify(title, message) {
+                        $("#notifyModal .modal-title").html(title);
+                        $("#notifyModal .modal-body").html(message);
+                        $("#notifyModal").modal({backdrop: "static"});
+                    }
         <% if (customerEntity == null) { %>
-        $("#loginBtn").on('click', function () {
-            $("#loginModal").modal({backdrop: "static"});
-        });
-        
-        $("#registerBtn").on('click', function () {
-            $("#registerModal").modal({backdrop: "static"});
-        });
-        
-        function validateFormRegister() {
-            $("#registerModal").modal('hide');
-            var phone = document.forms["registerForm"]["phone"].value;
-            var phoneRegex = /^[0-9]{10}$/;
-            if(!phoneRegex.test(phone)) {
-                notify("Thông báo", "Số điện thoại không đúng");
-                return false;
-            }
-            
-            var username = document.forms["registerForm"]["username"].value;
-            var usernameRegex = /^[a-zA-Z0-9]{6,30}$/;
-            if(!usernameRegex.test(username)) {
-                notify("Thông báo", "Tên đăng nhập không đúng");
-                return false;
-            }
-            var password = document.forms["registerForm"]["password"].value;
-            var passwordRegex = /^.{8,32}$/;
-            if(!passwordRegex.test(password)) {
-                notify("Thông báo", "Mật khẩu không đúng");
-                return false;
-            }
-            var repassword = document.forms["registerForm"]["repassword"].value;
-            if(password !== repassword) {
-                notify("Thông báo", "Mật khẩu nhập lại không đúng");
-                return false;
-            }
-        }
+                    $("#loginBtn").on('click', function () {
+                        $("#loginModal").modal({backdrop: "static"});
+                    });
+
+                    $("#registerBtn").on('click', function () {
+                        $("#registerModal").modal({backdrop: "static"});
+                    });
+
+                    function validateFormRegister() {
+                        $("#registerModal").modal('hide');
+                        var phone = document.forms["registerForm"]["phone"].value;
+                        var phoneRegex = /^[0-9]{10}$/;
+                        if (!phoneRegex.test(phone)) {
+                            notify("Thông báo", "Số điện thoại không đúng");
+                            return false;
+                        }
+
+                        var username = document.forms["registerForm"]["username"].value;
+                        var usernameRegex = /^[a-zA-Z0-9]{6,30}$/;
+                        if (!usernameRegex.test(username)) {
+                            notify("Thông báo", "Tên đăng nhập không đúng");
+                            return false;
+                        }
+                        var password = document.forms["registerForm"]["password"].value;
+                        var passwordRegex = /^.{8,32}$/;
+                        if (!passwordRegex.test(password)) {
+                            notify("Thông báo", "Mật khẩu không đúng");
+                            return false;
+                        }
+                        var repassword = document.forms["registerForm"]["repassword"].value;
+                        if (password !== repassword) {
+                            notify("Thông báo", "Mật khẩu nhập lại không đúng");
+                            return false;
+                        }
+                    }
         <% }%>
 
         <% if (statusLogin != null) {%>
-        notify("Thông báo", "<%= statusLogin%>");
-        $(".btn-danger, .close").on('click', function () {
-            window.location.href = window.location.origin + window.location.pathname;
-        });
+                    notify("Thông báo", "<%= statusLogin%>");
+                    $(".btn-danger, .close").on('click', function () {
+                        window.location.href = window.location.origin + window.location.pathname;
+                    });
         <% }%>
+                    function sortProduct() {
+                        var sortBy = document.getElementById("sort-product").value;
+                        if(sortBy === 'none') {
+                            return;
+                        }
+                        var url = new URL(window.location.href);
+                        var categoryId = url.searchParams.get("categoryId");
+                        window.location.href = document.location.origin + "/category?categoryId=" + categoryId + "&sortBy=" + sortBy;
+                    }
+
+                    var url = new URL(window.location.href);
+                    var sortBy = url.searchParams.get("sortBy");
+                    if(sortBy === "priceASC") {
+                        document.getElementById("sort-product").selectedIndex = "1";
+                    } else if (sortBy === "priceDESC") {
+                        document.getElementById("sort-product").selectedIndex = "2";
+                    } else if (sortBy === "nameASC") {
+                        document.getElementById("sort-product").selectedIndex = "3";
+                    } else if (sortBy === "nameDESC") {
+                        document.getElementById("sort-product").selectedIndex = "4";
+                    }
     </script>
 
 </html>

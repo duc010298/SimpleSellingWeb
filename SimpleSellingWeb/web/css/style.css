@@ -69,3 +69,8 @@ footer {
     background-color: #343A40;
     color: #fff;
 }
+
+.grid-category {
+    display: grid;
+    grid-template-columns: 80% 20%;
+}

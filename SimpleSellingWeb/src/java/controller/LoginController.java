@@ -8,7 +8,6 @@ package controller;
 import dao.CustomerDao;
 import entity.CustomerEntity;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -41,18 +40,8 @@ public class LoginController extends HttpServlet {
             if (session != null) {
                 session.invalidate();
             }
-            request.setAttribute("status", "Đăng xuất thành công");
-            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/login.jsp");
-            dispatch.forward(request, response);
+            response.sendRedirect("index?statusLogin=logoutsuccess");
         }
-
-        HttpSession session = request.getSession();
-        String usernameOld = (String) session.getAttribute("username");
-        if (usernameOld != null) {
-            request.setAttribute("status", "Bạn đã đăng nhập với \"" + usernameOld + "\"");
-        }
-        RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/login.jsp");
-        dispatch.forward(request, response);
     }
 
     @Override
@@ -60,21 +49,27 @@ public class LoginController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         CustomerEntity customerEntityOld = (CustomerEntity) session.getAttribute("user");
+        CustomerEntity customerEntity;
+
         if (customerEntityOld != null) {
-            request.setAttribute("status", "Bạn đã đăng nhập với tên \"" + customerEntityOld.getName() + "\"");
-            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/login.jsp");
-            dispatch.forward(request, response);
+            customerEntity = new CustomerDao().login(customerEntityOld.getUsername(), customerEntityOld.getPassword());
+            if (customerEntity != null) {
+                response.sendRedirect("index?statusLogin=duplicate&username=" + customerEntityOld.getUsername());
+                return;
+            } else {
+                response.sendRedirect("index?statusLogin=sessionout");
+                return;
+            }
         }
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String rememberMe = request.getParameter("remember-me");
 
-        CustomerEntity customerEntity = new CustomerDao().login(username, password);
+        customerEntity = new CustomerDao().login(username, password);
         if (customerEntity == null) {
-            request.setAttribute("status", "Đăng nhập không thành công");
-            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/login.jsp");
-            dispatch.forward(request, response);
+            response.sendRedirect("index?statusLogin=failed");
+            return;
         }
 
         session.setAttribute("user", customerEntity);
@@ -87,6 +82,6 @@ public class LoginController extends HttpServlet {
             response.addCookie(usernameCookie);
             response.addCookie(passwordCookie);
         }
-        response.sendRedirect("index");
+        response.sendRedirect("index?statusLogin=success");
     }
 }

@@ -47,4 +47,37 @@ public class CustomerDao {
         
         return customerEntity;
     }
+    
+    public boolean isDuplicateUsername(String username) {
+        String sql = "select count(id) as count from Customer where username=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, username);
+            ResultSet rs = pre.executeQuery();
+            if(rs.next()) {
+                int count = rs.getInt("count");
+                return count == 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public int registerCustomer(String name, String address, String phone, String username, String password) {
+        String sql = "insert into Customer values(?,?,?,?,?,1)";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setNString(1, name);
+            pre.setNString(2, address);
+            pre.setString(3, phone);
+            pre.setString(4, username);
+            pre.setString(5, password);
+            int n = pre.executeUpdate();
+            return n;
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 }

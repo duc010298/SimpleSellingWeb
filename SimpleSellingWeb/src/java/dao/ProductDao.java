@@ -42,7 +42,7 @@ public class ProductDao {
 
     public ArrayList<ProductEntity> getByCategory(String categoryId, String sortBy) {
         ArrayList<ProductEntity> productEntities = new ArrayList<>();
-        String sql = "select top 20 id, name, quantity, price, picture from Product inner join Category_Product on Product.id=Category_Product.productID and Category_Product.categoryID = ? ";
+        String sql = "select top 20 id, name, quantity, price, picture from Product inner join Category_Product on Product.id=Category_Product.productID and Category_Product.categoryID = ? and Product.status=1 ";
         if (sortBy != null) {
             switch (sortBy) {
                 case "priceASC":
@@ -77,5 +77,32 @@ public class ProductDao {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return productEntities;
+    }
+    
+    public ProductEntity getProductById(String id) {
+        ProductEntity entity = new ProductEntity();
+        int intID;
+        try {
+            intID = Integer.parseInt(id);
+        } catch(NumberFormatException ex) {
+            return entity;
+        }
+        String sql = "select name, quantity, price, picture, description from Product where status=1 and id=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, intID);
+            ResultSet rs = pre.executeQuery();
+            while(rs.next()) {
+                String name = rs.getNString("name");
+                int quantity = rs.getInt("quantity");
+                float price = rs.getFloat("price");
+                String picture = rs.getString("picture");
+                String description = rs.getString("description");
+                entity = new ProductEntity(intID, name, quantity, price, picture, description);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return entity;
     }
 }

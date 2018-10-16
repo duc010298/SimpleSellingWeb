@@ -13,6 +13,16 @@ public class ProductEntity {
     private int status;
     private Date lastmodifier;
 
+    public ProductEntity() {
+    }
+
+    public ProductEntity(int id, String name, float price, String pricture) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.pricture = pricture;
+    }
+
     public ProductEntity(int id, String name, int quantity, float price, String pricture, String description, int status, Date lastmodifier) {
         this.id = id;
         this.name = name;

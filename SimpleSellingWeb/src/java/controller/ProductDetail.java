@@ -10,9 +10,9 @@ import dao.CustomerDao;
 import dao.ProductDao;
 import entity.CategoryEntity;
 import entity.CustomerEntity;
-import entity.ProductCartEntity;
 import entity.ProductEntity;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.servlet.RequestDispatcher;
@@ -28,41 +28,41 @@ import javax.servlet.http.HttpSession;
  *
  * @author Đỗ Trung Đức
  */
-@WebServlet(name = "HomeController", urlPatterns = {"/index"})
-public class HomeController extends HttpServlet {
+@WebServlet(name = "ProductDetail", urlPatterns = {"/ProductDetail"})
+public class ProductDetail extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String statusLogin = request.getParameter("statusLogin");
-        if (statusLogin != null) {
-            if (statusLogin.equals("duplicate")) {
+        if(statusLogin != null) {
+            if(statusLogin.equals("duplicate")) {
                 String username = request.getParameter("username");
                 request.setAttribute("statusLogin", "Bạn đã đăng nhập với tên " + username);
             }
-            if (statusLogin.equals("sessionout")) {
+            if(statusLogin.equals("sessionout")) {
                 request.setAttribute("statusLogin", "Phiên đã hết hạn");
             }
-            if (statusLogin.equals("failed")) {
+            if(statusLogin.equals("failed")) {
                 request.setAttribute("statusLogin", "Đăng nhập không thành công");
             }
-            if (statusLogin.equals("success")) {
+            if(statusLogin.equals("success")) {
                 request.setAttribute("statusLogin", "Đăng nhập thành công");
             }
-            if (statusLogin.equals("logoutsuccess")) {
+            if(statusLogin.equals("logoutsuccess")) {
                 request.setAttribute("statusLogin", "Đăng xuất thành công");
             }
-            if (statusLogin.equals("registererror")) {
+            if(statusLogin.equals("registererror")) {
                 request.setAttribute("statusLogin", "Đăng kí không thành công");
             }
-            if (statusLogin.equals("registerduplicateusername")) {
+            if(statusLogin.equals("registerduplicateusername")) {
                 request.setAttribute("statusLogin", "Tên đăng nhập đã tồn tại");
             }
-            if (statusLogin.equals("registersuccess")) {
+            if(statusLogin.equals("registersuccess")) {
                 request.setAttribute("statusLogin", "Đăng kí thành công");
             }
         }
-
+        
         HttpSession session = request.getSession();
         CustomerEntity customerEntity = (CustomerEntity) session.getAttribute("user");
         if (customerEntity != null) {
@@ -88,31 +88,23 @@ public class HomeController extends HttpServlet {
             }
         }
 
-        ArrayList<ProductCartEntity> productCartEntitys = (ArrayList<ProductCartEntity>) session.getAttribute("cartDetail");
-        Integer totalQuantity = (Integer) session.getAttribute("totalQuantity");
-        Float totalPrice = (Float) session.getAttribute("totalPrice");
-        request.setAttribute("cartDetail", productCartEntitys);
-        if (productCartEntitys != null) {
-            request.setAttribute("totalQuantity", totalQuantity);
-            request.setAttribute("totalPrice", totalPrice);
-        } else {
-            float temp = 0;
-            request.setAttribute("totalQuantity", 0);
-            request.setAttribute("totalPrice", temp);
-        }
-
         HashMap<CategoryEntity, ArrayList<CategoryEntity>> hashMap = new CategoryDao().getCategoryList();
         ArrayList<ProductEntity> productEntities = new ProductDao().getProductForIndex();
         request.setAttribute("categoryMap", hashMap);
         request.setAttribute("productEntities", productEntities);
-        RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/home.jsp");
+        
+        String id = request.getParameter("id");
+        ProductEntity entity = new ProductDao().getProductById(id);
+        request.setAttribute("entity", entity);
+        
+        RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/ProductDetail.jsp");
         dispatch.forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
     }
 
 }

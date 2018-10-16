@@ -74,3 +74,50 @@ footer {
     display: grid;
     grid-template-columns: 80% 20%;
 }
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: 30% 70%;
+}
+
+.product-box-detail {
+    border: 1px solid rgb(172, 170, 170);
+}
+
+.product-box-detail>img {
+    margin: 5px;
+}
+
+.product-box-detail>div {
+    margin: 5px;
+}
+
+.product-price-2 {
+    color: red;
+    font-weight: bold;
+    font-size: 50px;
+}
+
+.description {
+    font-size: 20px;
+}
+
+.grid-4 {
+    margin: 5px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.dropdown-cart {
+    position: fixed !important;
+    top: 60px;
+    right: 0;
+    left: auto;
+    width: 350px;
+}
+
+.grid-5 {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-row-gap: 15px;
+}

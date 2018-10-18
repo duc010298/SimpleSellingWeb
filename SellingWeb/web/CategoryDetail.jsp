@@ -1,31 +1,26 @@
-<%-- 
-    Document   : home
-    Created on : Oct 18, 2018, 10:02:00 AM
-    Author     : Đỗ Trung Đức
---%>
-
-<%@page import="java.util.ArrayList"%>
-<%@page import="entity.ProductEntity"%>
 <%@page import="util.MyUtils"%>
+<%@page import="entity.ProductEntity"%>
+<%@page import="java.util.ArrayList"%>
 <% ArrayList<ProductEntity> productEntities = (ArrayList<ProductEntity>) request.getAttribute("productEntities"); %>
-<% String status = (String) request.getAttribute("status"); %>
+<% String category = (String) request.getAttribute("category");%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="images/favicon.ico" rel="icon" type="image/png"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
               crossorigin="anonymous">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
-        <title>Trang chủ</title>
+        <title><%= category%></title>
     </head>
     <body>
         <jsp:include page="/header" />
         <div class="container">
             <jsp:include page="/category" />
-            <h3><i class="fas fa-calendar-alt"></i> Sản phẩm mới cập nhật</h3>
+            <h3><i class="fas fa-calendar-alt"></i> <%= category%></h3>
             <div class="grid-2">
                 <% for (ProductEntity entity : productEntities) {%>
                 <div class="product-box" id="<%= entity.getId()%>">
@@ -46,6 +41,7 @@
                 <% }%>
             </div>
         </div>
+        <br>
         <%@include file="footer.jsp" %>
     </body>
     <script>
@@ -66,10 +62,13 @@
                     notify("Lỗi", "Không thể xử lí dữ liệu");
                     isSuccess = false;
                 }
+            }).done(function (result) {
+                notify("Thông báo", result);
             });
-            
-            if(!isSuccess) return;
-            
+
+            if (!isSuccess)
+                return;
+
             var isDuplicate = $("#cart-detail #" + id).length != 0;
 
             if (!isDuplicate) {
@@ -126,12 +125,4 @@
 
         });
     </script>
-    <% if (status != null) {%>
-    <script>
-        notify("Thông báo", "<%= status%>");
-        $(".btn-danger, .close").on('click', function () {
-            window.location.href = window.location.origin + window.location.pathname;
-        });
-    </script>
-    <% }%>
 </html>

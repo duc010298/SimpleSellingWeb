@@ -17,7 +17,7 @@
                 <div class="dropdown-menu">
                     <% ArrayList<CategoryEntity> categoryEntitys = (ArrayList<CategoryEntity>) m.getValue(); %>
                     <% for (CategoryEntity c : categoryEntitys) {%>
-                    <a class="dropdown-item" href="category?categoryId=<%= c.getId()%>"><%= c.getName()%></a>
+                    <a class="dropdown-item" href="categoryDetail?categoryId=<%= c.getId()%>"><%= c.getName()%></a>
                     <% } %>
                 </div>
             </div>

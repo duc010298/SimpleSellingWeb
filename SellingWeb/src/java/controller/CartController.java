@@ -101,6 +101,23 @@ public class CartController extends HttpServlet {
                 }
             }
         }
+
+        if (service.equals("updateCart")) {
+            String id = request.getParameter("id");
+            String quantity = request.getParameter("quantity");
+            HttpSession session = request.getSession();
+            ArrayList<ProductCartEntity> productCartEntitys = (ArrayList<ProductCartEntity>) session.getAttribute("cartDetail");
+            productCartEntitys.stream().filter((productCartEntity) -> (id.equals(String.valueOf(productCartEntity.getId())))).forEachOrdered((productCartEntity) -> {
+                productCartEntity.setQuantityInCart(Integer.parseInt(quantity));
+            });
+            float totalPrice = 0;
+            totalPrice = productCartEntitys.stream().map((productCartEntity) -> productCartEntity.getPrice() * productCartEntity.getQuantityInCart()).reduce(totalPrice, (accumulator, _item) -> accumulator + _item);
+            session.setAttribute("totalPrice", totalPrice);
+            session.setAttribute("cartDetail", productCartEntitys);
+            try (PrintWriter out = response.getWriter()) {
+                out.print("Update cart successfully");
+            }
+        }
     }
 
 }

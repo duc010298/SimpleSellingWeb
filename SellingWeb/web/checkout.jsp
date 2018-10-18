@@ -46,14 +46,14 @@
                             <td class="align-middle"><img src="<%= cartEntity.getPricture()%>" class="img-product-3" alt="simple"></td>
                             <td class="align-middle"><%= cartEntity.getName()%></td>
                             <td class="align-middle"><span class="price"><%= MyUtils.priceToString(cartEntity.getPrice())%></span> VNĐ</td>
-                            <td class="align-middle"><input name="<%= cartEntity.getId()%>" class="quantityInCart" type="number" value ="<%= cartEntity.getQuantityInCart()%>" class="form-control quantity-input"></td>
+                            <td class="align-middle"><input name="<%= cartEntity.getId()%>" class="quantityInCart" min="1" type="number" value ="<%= cartEntity.getQuantityInCart()%>" class="form-control quantity-input"></td>
                             <td class="align-middle"><span class="totalPrice-1"><%= MyUtils.priceToString(cartEntity.getPrice() * cartEntity.getQuantityInCart())%></span> VNĐ</td>
                             <td class="align-middle"><button type="button" class="btn btn-link"><h2><i class="fas fa-trash-alt"></i></h2></button></td>
                         </tr>
                         <% }%>
                         <tr>
-                            <th colspan="6">Thành tiền</th>
-                            <th><span id="totalPrice-2"><%= MyUtils.priceToString(totalPrice)%></span> VNĐ</th>
+                            <th colspan="5">Thành tiền</th>
+                            <th colspan="2"><span id="totalPrice-2"><%= MyUtils.priceToString(totalPrice)%></span> VNĐ</th>
                         </tr>
                     </tbody>
                 </table>
@@ -78,20 +78,67 @@
     </body>
     <script>
         $(".quantityInCart").change(function () {
-            //ajax here
-            
+            var id = $(this).attr("name");
             var parent = $(this).parents("tr");
+            var quantity = parent.find(".quantityInCart").val();
+            var isSuccess = true;
+            //ajax here
+            $.ajax({
+                url: "Cart",
+                type: 'POST',
+                dataType: 'html',
+                data: {
+                    service: "updateCart",
+                    id: id,
+                    quantity: quantity
+                },
+                error: function () {
+                    notify("Lỗi", "Không thể xử lí dữ liệu");
+                    isSuccess = false;
+                }
+            }).done(function (result) {
+                console.log(result);
+            });;
+            if (!isSuccess)
+                return;
+            $("#" + id + " .count").html(quantity);
+
             var price = parent.find(".price").html();
             price = price.replace(/\./g, "");
-            var quantity = parent.find(".quantityInCart").val();
             var totalPrice1 = parent.find(".totalPrice-1").html();
             totalPrice1 = totalPrice1.replace(/\./g, "");
-            var totalPrice2 = $("#totalPrice-2").html();
-            totalPrice2 = totalPrice2.replace(/\./g, "");
-            parent.find(".totalPrice-1").html(totalPrice1 * quantity);
-            
-            totalPrice2 = Number(totalPrice2) + totalPrice1 * quantity;
-            $("#totalPrice-2").html(totalPrice2);
+            totalPrice1 = price * quantity;
+            totalPrice1 = "" + totalPrice1;
+            var count = 0;
+            for (var i = totalPrice1.length - 1; i >= 0; i--) {
+                if (i == 0)
+                    break;
+                count++;
+                if (count == 3) {
+                    count = 0;
+                    totalPrice1 = totalPrice1.substring(0, i) + '.' + totalPrice1.substring(i, totalPrice1.length);
+                }
+            }
+            parent.find(".totalPrice-1").html(totalPrice1);
+            var total = 0;
+            $(".totalPrice-1").each(function () {
+                var temp = $(this).html();
+                temp = temp.replace(/\./g, "");
+                total += Number(temp);
+            });
+            total = "" + total;
+            count = 0;
+            for (var i = total.length - 1; i >= 0; i--) {
+                if (i == 0)
+                    break;
+                count++;
+                if (count == 3) {
+                    count = 0;
+                    total = total.substring(0, i) + '.' + total.substring(i, total.length);
+                }
+            }
+            $("#totalPrice-2").html(total);
+            $("#cart-total-price").html(total);
         });
     </script>
 </html>

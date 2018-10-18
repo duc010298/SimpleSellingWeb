@@ -40,7 +40,7 @@ public class LoginController extends HttpServlet {
             if (session != null) {
                 session.invalidate();
             }
-            response.sendRedirect("index?statusLogin=logoutsuccess");
+            response.sendRedirect("index?status=logoutsuccess");
         }
     }
 
@@ -54,10 +54,10 @@ public class LoginController extends HttpServlet {
         if (customerEntityOld != null) {
             customerEntity = new CustomerDao().login(customerEntityOld.getUsername(), customerEntityOld.getPassword());
             if (customerEntity != null) {
-                response.sendRedirect("index?statusLogin=duplicate&username=" + customerEntityOld.getUsername());
+                response.sendRedirect("index?status=duplicate&username=" + customerEntityOld.getUsername());
                 return;
             } else {
-                response.sendRedirect("index?statusLogin=sessionout");
+                response.sendRedirect("index?status=sessionout");
                 return;
             }
         }
@@ -68,7 +68,7 @@ public class LoginController extends HttpServlet {
 
         customerEntity = new CustomerDao().login(username, password);
         if (customerEntity == null) {
-            response.sendRedirect("index?statusLogin=failed");
+            response.sendRedirect("index?status=failed");
             return;
         }
 
@@ -82,6 +82,6 @@ public class LoginController extends HttpServlet {
             response.addCookie(usernameCookie);
             response.addCookie(passwordCookie);
         }
-        response.sendRedirect("index?statusLogin=success");
+        response.sendRedirect("index?status=success");
     }
 }

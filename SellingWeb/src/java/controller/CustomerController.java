@@ -29,31 +29,33 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String service = request.getParameter("service");
         if(service.equals("register")) {
             String password = request.getParameter("password");
             String name = request.getParameter("name");
+            System.out.println(name);
             String address = request.getParameter("address");
             String phone = request.getParameter("phone");
             String username = request.getParameter("username");
             if(name == null || address == null || phone == null || username == null || password == null) {
-                response.sendRedirect("index?statusLogin=registererror");
+                response.sendRedirect("index?status=registererror");
                 return;
             }
             if(name.isEmpty() || address.isEmpty() || phone.isEmpty() || username.isEmpty() || password.isEmpty()) {
-                response.sendRedirect("index?statusLogin=registererror");
+                response.sendRedirect("index?status=registererror");
                 return;
             }
             
             CustomerDao customerDao = new CustomerDao();
             if(customerDao.isDuplicateUsername(username)) {
-                response.sendRedirect("index?statusLogin=registerduplicateusername");
+                response.sendRedirect("index?status=registerduplicateusername");
                 return;
             }
             if(customerDao.registerCustomer(name, address, phone, username, password) == 1) {
-                response.sendRedirect("index?statusLogin=registersuccess");
+                response.sendRedirect("index?status=registersuccess");
             } else {
-                response.sendRedirect("index?statusLogin=registererror");
+                response.sendRedirect("index?status=registererror");
             }
         }
     }

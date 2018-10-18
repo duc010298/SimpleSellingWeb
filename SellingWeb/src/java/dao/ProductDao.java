@@ -20,7 +20,7 @@ public class ProductDao {
         conn = new DBConnect().getConnection();
     }
 
-    public ArrayList<ProductEntity> getProductForIndex() {
+    public ArrayList<ProductEntity> getTop20Product() {
         ArrayList<ProductEntity> productEntities = new ArrayList<>();
         String sql = "select top 20 id, name, quantity, price, picture from Product where status=1 order by convert(DateTime, lastmodifier,101) desc";
         try {

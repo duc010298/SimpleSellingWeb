@@ -121,3 +121,18 @@ footer {
     grid-template-columns: 30% 70%;
     grid-row-gap: 15px;
 }
+
+.grid-6 {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    grid-column-gap: 5px;
+}
+
+.table {
+    background-color: #fff;
+}
+
+.img-product-3 {
+    width: 202px;
+    height: 100px;
+}

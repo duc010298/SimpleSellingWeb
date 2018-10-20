@@ -66,6 +66,8 @@
                     notify("Lỗi", "Không thể xử lí dữ liệu");
                     isSuccess = false;
                 }
+            }).done(function (result) {
+                notify("Thông báo", result);
             });
             
             if(!isSuccess) return;

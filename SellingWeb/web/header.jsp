@@ -143,13 +143,13 @@
                     <div class="grid-5" id="cart-detail">
                         <% if (productCartEntitys != null) { %>
                         <% for (ProductCartEntity cartEntity : productCartEntitys) {%>
-                        <img src="<%= cartEntity.getPricture()%>" class="img-product" alt="simple">
-                        <div id="<%= cartEntity.getId()%>"><p><%= cartEntity.getName()%></p><span class="price text-info"> <%= MyUtils.priceToString(cartEntity.getPrice())%></span>  Quantity: <span class="count"><%= cartEntity.getQuantityInCart()%></span></div>
+                        <img src="<%= cartEntity.getPricture()%>" class="img-product" alt="simple" name="cart<%= cartEntity.getId()%>">
+                        <div name="cart<%= cartEntity.getId()%>" id="<%= cartEntity.getId()%>"><p><%= cartEntity.getName()%></p><span class="price text-info"> <%= MyUtils.priceToString(cartEntity.getPrice())%></span>  Quantity: <span class="count"><%= cartEntity.getQuantityInCart()%></span></div>
                                 <% } %>
                                 <% }%>
                     </div>
                     <hr>
-                    <a href="Cart?service=checkout" class="btn btn-primary btn-block" role="button">Checkout</a>
+                    <a href="Cart?service=checkout" class="btn btn-primary btn-block" role="button">View Cart</a>
                 </div>
             </li>
         </ul>

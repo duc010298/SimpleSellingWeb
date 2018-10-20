@@ -27,6 +27,10 @@ public class CategoryDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        
         String id = request.getParameter("categoryId");
         String sortBy = request.getParameter("sortBy");
         ArrayList<ProductEntity> productEntitys = new ProductDao().getByCategory(id, sortBy);

@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class ProductEntity {
 
-    private int id;
+    private String id;
     private  String name;
     private  int quantity;
     private float price;
@@ -16,14 +16,7 @@ public class ProductEntity {
     public ProductEntity() {
     }
 
-    public ProductEntity(int id, String name, float price, String pricture) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.pricture = pricture;
-    }
-
-    public ProductEntity(int id, String name, int quantity, float price, String pricture, String description, int status, Date lastmodifier) {
+    public ProductEntity(String id, String name, int quantity, float price, String pricture, String description, int status, Date lastmodifier) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -34,7 +27,7 @@ public class ProductEntity {
         this.lastmodifier = lastmodifier;
     }
 
-    public ProductEntity(int id, String name, int quantity, float price, String pricture, String description) {
+    public ProductEntity(String id, String name, int quantity, float price, String pricture, String description) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -43,7 +36,7 @@ public class ProductEntity {
         this.description = description;
     }
 
-    public ProductEntity(int id, String name, int quantity, float price, String pricture) {
+    public ProductEntity(String id, String name, int quantity, float price, String pricture) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -53,11 +46,11 @@ public class ProductEntity {
     
     
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

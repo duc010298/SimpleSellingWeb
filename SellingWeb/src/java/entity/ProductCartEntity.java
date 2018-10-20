@@ -17,8 +17,8 @@ public class ProductCartEntity extends ProductEntity {
         this.quantityInCart = quantityInCart;
     }
 
-    public ProductCartEntity(int quantityInCart, int id, String name, float price, String pricture) {
-        super(id, name, price, pricture);
+    public ProductCartEntity(int quantityInCart, String id, String name, int quantity, float price, String pricture) {
+        super(id, name, quantity, price, pricture);
         this.quantityInCart = quantityInCart;
     }
 

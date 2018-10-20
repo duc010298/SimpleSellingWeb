@@ -5,36 +5,32 @@
  */
 package entity;
 
+import java.sql.Timestamp;
+
 /**
  *
  * @author Đỗ Trung Đức
  */
-public class CustomerEntity {
+public class InvoiceEntity {
+    
     private String id;
+    private Timestamp date;
+    private String customerId;
     private String name;
     private String address;
     private String phone;
-    private String username;
-    private String password;
-    private boolean status;
+    private float total;
+    private int status;
 
-    public CustomerEntity(String id, String name, String address, String phone, String username, String password, boolean status) {
+    public InvoiceEntity(String id, Timestamp date, String customerId, String name, String address, String phone, float total, int status) {
         this.id = id;
+        this.date = date;
+        this.customerId = customerId;
         this.name = name;
         this.address = address;
         this.phone = phone;
-        this.username = username;
-        this.password = password;
+        this.total = total;
         this.status = status;
-    }
-
-    public CustomerEntity(String id, String name, String address, String phone, String username, String password) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.phone = phone;
-        this.username = username;
-        this.password = password;
     }
 
     public String getId() {
@@ -43,6 +39,22 @@ public class CustomerEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public String getName() {
@@ -69,29 +81,21 @@ public class CustomerEntity {
         this.phone = phone;
     }
 
-    public String getUsername() {
-        return username;
+    public float getTotal() {
+        return total;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setTotal(float total) {
+        this.total = total;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
-
+    
     
 }

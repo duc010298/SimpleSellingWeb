@@ -27,6 +27,10 @@ public class CategoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        
         HashMap<CategoryEntity, ArrayList<CategoryEntity>> hashMap = new CategoryDao().getCategoryList();
         request.setAttribute("categoryMap", hashMap);
         RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/category.jsp");

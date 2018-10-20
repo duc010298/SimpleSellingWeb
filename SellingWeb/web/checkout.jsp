@@ -29,7 +29,6 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>STT</th>
                             <th>Ảnh</th>
                             <th>Sản phẩm</th>
                             <th>Giá</th>
@@ -39,44 +38,55 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% int i = 1; %>
                         <% for (ProductCartEntity cartEntity : productCartEntitys) {%>
                         <tr>
-                            <td class="align-middle"><%= i++%></td>
                             <td class="align-middle"><img src="<%= cartEntity.getPricture()%>" class="img-product-3" alt="simple"></td>
                             <td class="align-middle"><%= cartEntity.getName()%></td>
                             <td class="align-middle"><span class="price"><%= MyUtils.priceToString(cartEntity.getPrice())%></span> VNĐ</td>
-                            <td class="align-middle"><input name="<%= cartEntity.getId()%>" class="quantityInCart" min="1" type="number" value ="<%= cartEntity.getQuantityInCart()%>" class="form-control quantity-input"></td>
+                            <td class="align-middle"><input name="<%= cartEntity.getId()%>" class="quantityInCart" min="1" max="<%= cartEntity.getQuantity() %>" type="number" value ="<%= cartEntity.getQuantityInCart()%>" class="form-control quantity-input"></td>
                             <td class="align-middle"><span class="totalPrice-1"><%= MyUtils.priceToString(cartEntity.getPrice() * cartEntity.getQuantityInCart())%></span> VNĐ</td>
-                            <td class="align-middle"><button type="button" class="btn btn-link"><h2><i class="fas fa-trash-alt"></i></h2></button></td>
+                            <td class="align-middle"><button type="button" name="<%= cartEntity.getId()%>" class="btn btn-link remove-product"><h2><i class="fas fa-trash-alt"></i></h2></button></td>
                         </tr>
                         <% }%>
                         <tr>
-                            <th colspan="5">Thành tiền</th>
+                            <th colspan="4">Thành tiền</th>
                             <th colspan="2"><span id="totalPrice-2"><%= MyUtils.priceToString(totalPrice)%></span> VNĐ</th>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="jumbotron">
-                <h2>Thông tin người mua hàng:</h2>
-                <div class="form-group">
-                    <label for="name">Họ và tên:</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Nhập họ và tên" required>
-                </div>
-                <div class="form-group">
-                    <label for="address">Địa chị:</label>
-                    <input type="text" class="form-control" id="address" name="address" placeholder="Nhập địa chỉ" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Số điện thoại:</label>
-                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
-                </div>
+                <form action="Cart" method="post" name="checkoutForm" onsubmit="return validateFormCheckOut()">
+                    <input type="text" name="service" value="checkout" hidden>
+                    <h2>Thông tin người mua hàng:</h2>
+                    <div class="form-group">
+                        <label for="name">Họ và tên:</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Nhập họ và tên" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chị:</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Nhập địa chỉ" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại:</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Checkout</button>
+                </form>
             </div>
         </div>
         <%@include file="footer.jsp" %>
     </body>
     <script>
+        function validateFormRegister() {
+            var phone = document.forms["checkoutForm"]["phone"].value;
+            var phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(phone)) {
+                notify("Thông báo", "Số điện thoại không đúng");
+                return false;
+            }
+        }
+
         $(".quantityInCart").change(function () {
             var id = $(this).attr("name");
             var parent = $(this).parents("tr");
@@ -96,9 +106,7 @@
                     notify("Lỗi", "Không thể xử lí dữ liệu");
                     isSuccess = false;
                 }
-            }).done(function (result) {
-                console.log(result);
-            });;
+            });
             if (!isSuccess)
                 return;
             $("#" + id + " .count").html(quantity);
@@ -139,6 +147,31 @@
             }
             $("#totalPrice-2").html(total);
             $("#cart-total-price").html(total);
+        });
+
+        $(".remove-product").on('click', function () {
+            var parent = $(this).parents("tr");
+            var id = $(this).attr("name");
+            $.ajax({
+                url: "Cart",
+                type: 'POST',
+                dataType: 'html',
+                data: {
+                    service: "removeCart",
+                    id: id
+                },
+                error: function () {
+                    notify("Lỗi", "Không thể xử lí dữ liệu");
+                }
+            }).done(function (result) {
+                $("#totalPrice-2").html(result);
+                $("#cart-total-price").html(result);
+                parent.remove();
+                $("[name='" + "cart" + id + "']").remove();
+                var quantity = $("#cart-detail img").length;
+                $("#cart-count-1").html(quantity);
+                $("#cart-count-2").html(quantity);
+            });
         });
     </script>
 </html>

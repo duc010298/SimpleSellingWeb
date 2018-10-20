@@ -20,7 +20,16 @@
         <jsp:include page="/header" />
         <div class="container">
             <jsp:include page="/category" />
-            <h3><i class="fas fa-calendar-alt"></i> <%= category%></h3>
+            <div class="grid-category">
+                <h3><i class="fas fa-calendar-alt"></i> <%= category%></h3>
+                <select class="form-control" onchange="sortProduct()" id="sort-product">
+                    <option value="none">Sắp xếp theo sản phẩm</option>
+                    <option value="priceASC">Giá (Thấp > Cao)</option>
+                    <option value="priceDESC">Giá (Cao > Thấp)</option>
+                    <option value="nameASC">Tên (A > Z)</option>
+                    <option value="nameDESC">Tên (Z > A)</option>
+                </select>
+            </div>
             <div class="grid-2">
                 <% for (ProductEntity entity : productEntities) {%>
                 <div class="product-box" id="<%= entity.getId()%>">
@@ -124,5 +133,27 @@
             }
 
         });
+
+        function sortProduct() {
+            var sortBy = document.getElementById("sort-product").value;
+            if (sortBy === 'none') {
+                return;
+            }
+            var url = new URL(window.location.href);
+            var categoryId = url.searchParams.get("categoryId");
+            window.location.href = document.location.origin + "/categoryDetail?categoryId=" + categoryId + "&sortBy=" + sortBy;
+        }
+
+        var url = new URL(window.location.href);
+        var sortBy = url.searchParams.get("sortBy");
+        if (sortBy === "priceASC") {
+            document.getElementById("sort-product").selectedIndex = "1";
+        } else if (sortBy === "priceDESC") {
+            document.getElementById("sort-product").selectedIndex = "2";
+        } else if (sortBy === "nameASC") {
+            document.getElementById("sort-product").selectedIndex = "3";
+        } else if (sortBy === "nameDESC") {
+            document.getElementById("sort-product").selectedIndex = "4";
+        }
     </script>
 </html>

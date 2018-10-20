@@ -26,6 +26,10 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        
         String status = request.getParameter("status");
         if (status != null) {
             if (status.equals("duplicate")) {
@@ -57,7 +61,7 @@ public class HomeController extends HttpServlet {
                 request.setAttribute("status", "Bạn cần đăng nhập trước khi checkout");
             }
         }
-        
+
         ArrayList<ProductEntity> productEntities = new ProductDao().getTop20Product();
         request.setAttribute("productEntities", productEntities);
         RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/home.jsp");

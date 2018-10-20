@@ -29,6 +29,9 @@ public class HeaderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
         
         HttpSession session = request.getSession();
         //infor login
@@ -48,7 +51,7 @@ public class HeaderController extends HttpServlet {
                         password = cookie.getValue();
                     }
                 }
-                customerEntity = new CustomerDao().login(username, password);
+                customerEntity = new CustomerDao().loginFromRemeberMe(username, password);
                 if (customerEntity != null) {
                     session.setAttribute("user", customerEntity);
                     request.setAttribute("customer", customerEntity);
@@ -57,9 +60,13 @@ public class HeaderController extends HttpServlet {
         }
         
         //infor cart
-        ArrayList<ProductCartEntity> productCartEntitys = (ArrayList<ProductCartEntity>) session.getAttribute("cartDetail");
-        int totalQuantity = session.getAttribute("totalQuantity") == null ? 0 : (int) session.getAttribute("totalQuantity");
-        float totalPrice = session.getAttribute("totalPrice") == null ? 0 : (float) session.getAttribute("totalPrice");
+        ArrayList<ProductCartEntity> productCartEntitys = session.getAttribute("cartDetail") == null ? new ArrayList<>() : (ArrayList<ProductCartEntity>) session.getAttribute("cartDetail");
+        int totalQuantity = 0;
+        float totalPrice = 0;
+        for(ProductCartEntity cartEntity: productCartEntitys) {
+            totalQuantity++;
+            totalPrice += cartEntity.getPrice() * cartEntity.getQuantityInCart();
+        }
         request.setAttribute("cartDetail", productCartEntitys);
         request.setAttribute("totalQuantity", totalQuantity);
         request.setAttribute("totalPrice", totalPrice);

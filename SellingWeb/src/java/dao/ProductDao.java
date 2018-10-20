@@ -27,7 +27,7 @@ public class ProductDao {
             Statement sta = conn.createStatement();
             ResultSet rs = sta.executeQuery(sql);
             while (rs.next()) {
-                int id = rs.getInt("id");
+                String id = rs.getString("id");
                 String name = rs.getNString("name");
                 int quantity = rs.getInt("quantity");
                 float price = rs.getFloat("price");
@@ -66,7 +66,7 @@ public class ProductDao {
             pre.setString(1, categoryId);
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("id");
+                String id = rs.getString("id");
                 String name = rs.getNString("name");
                 int quantity = rs.getInt("quantity");
                 float price = rs.getFloat("price");
@@ -81,16 +81,10 @@ public class ProductDao {
     
     public ProductEntity getProductById(String id) {
         ProductEntity entity = new ProductEntity();
-        int intID;
-        try {
-            intID = Integer.parseInt(id);
-        } catch(NumberFormatException ex) {
-            return entity;
-        }
         String sql = "select name, quantity, price, picture, description from Product where status=1 and id=?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
-            pre.setInt(1, intID);
+            pre.setString(1, id);
             ResultSet rs = pre.executeQuery();
             while(rs.next()) {
                 String name = rs.getNString("name");
@@ -98,11 +92,25 @@ public class ProductDao {
                 float price = rs.getFloat("price");
                 String picture = rs.getString("picture");
                 String description = rs.getString("description");
-                entity = new ProductEntity(intID, name, quantity, price, picture, description);
+                entity = new ProductEntity(id, name, quantity, price, picture, description);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return entity;
+    }
+    
+    public boolean updateQuantity(String id, String quantity) {
+        int n = 0;
+        String sql = "update Product set quantity=? where id=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, quantity);
+            pre.setString(2, id);
+            n = pre.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n == 1;
     }
 }

@@ -113,4 +113,26 @@ public class ProductDao {
         }
         return n == 1;
     }
+    
+    public ArrayList<ProductEntity> searchProduct(String content) {
+        ArrayList<ProductEntity> productEntities = new ArrayList<>();
+        String sql = "select top 20 id, name, quantity, price, picture from product where status=1 and (name like ? or description like ?)";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, '%' + content + '%');
+            pre.setString(2, '%' + content + '%');
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getNString("name");
+                int quantity = rs.getInt("quantity");
+                float price = rs.getFloat("price");
+                String picture = rs.getString("picture");
+                productEntities.add(new ProductEntity(id, name, quantity, price, picture));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return productEntities;
+    }
 }

@@ -110,9 +110,9 @@
     <a class="navbar-brand" href="index">SE1215 Shopping</a>
     <div class="navbar-collapse collapse">
         <ul class="navbar-nav mr-auto">
-            <form class="form-inline" action="/action_page.php">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+            <form class="form-inline" method="get" action="search">
+                <input class="form-control mr-sm-2" type="text" name="value" placeholder="Tìm kiếm">
+                <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
             </form>
         </ul>
         <ul class="navbar-nav">

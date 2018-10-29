@@ -138,7 +138,7 @@ public class ProductDao {
         }
         return entity;
     }
-    
+
     public ProductEntity getProductByIdForEdit(String id) {
         ProductEntity entity = new ProductEntity();
         String sql = "select name, quantity, price, picture, description, status from Product where id=?";
@@ -248,14 +248,14 @@ public class ProductDao {
                 PreparedStatement pre = conn.prepareStatement(sql);
                 pre.setString(1, id);
                 int n = pre.executeUpdate();
-                if(n == 0) {
+                if (n == 0) {
                     return 0;
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
                 return 0;
             }
-            
+
             sql = "delete from product where id=?";
             try {
                 PreparedStatement pre = conn.prepareStatement(sql);
@@ -283,6 +283,27 @@ public class ProductDao {
                 return 0;
             }
         }
+    }
+
+    public boolean updateProduct(String id, String name, String quantity, float price, String picture, String description, String status) {
+        Calendar currenttime = Calendar.getInstance();
+        Date datenow = new Date((currenttime.getTime()).getTime());
+        String sql = "update Product set name=?,quantity=?,price=?,picture=?,description=?,status=?,lastmodifier=? where id=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setNString(1, name);
+            pre.setInt(2, Integer.parseInt(quantity));
+            pre.setFloat(3, price);
+            pre.setString(4, picture);
+            pre.setNString(5, description);
+            pre.setInt(6, Integer.parseInt(status));
+            pre.setDate(7, datenow);
+            pre.setString(8, id);
+            return pre.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
 }

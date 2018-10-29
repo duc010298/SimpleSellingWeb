@@ -200,4 +200,35 @@ public class CategoryDao {
             return false;
         }
     }
+    
+    public ArrayList<Integer> getCategoryIdListFromProductId(String productId) {
+        ArrayList<Integer> ret = new ArrayList<>();
+        String sql = "select categoryID from Category_Product where productID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, productId);
+            ResultSet rs = pre.executeQuery();
+            while(rs.next()) {
+                int categoryID = rs.getInt("categoryID");
+                ret.add(categoryID);
+            }
+            return ret;
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ret;
+    }
+    
+    public boolean removeOldCategory(String productId) {
+        String sql = "delete from Category_Product where productID=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, productId);
+            pre.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoryDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }

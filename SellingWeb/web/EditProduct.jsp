@@ -15,6 +15,7 @@
 <% AdminEntity adminEntity = (AdminEntity) request.getAttribute("admin");%>
 <% HashMap<CategoryEntity, ArrayList<CategoryEntity>> hashMap = (HashMap<CategoryEntity, ArrayList<CategoryEntity>>) request.getAttribute("category");%>
 <% ProductEntity productEntity = (ProductEntity) request.getAttribute("productEntity"); %>
+<% ArrayList<Integer> categoryIdList = (ArrayList<Integer>) request.getAttribute("categoryIdList");%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -81,7 +82,7 @@
                     <input type="text" hidden="" value="add" name="service">
                     <div class="form-group">
                         <label for="name">Tên sản phẩm:</label>
-                        <input type="text" class="form-control" id="name" name="name" required value="<%= productEntity.getName() %>">
+                        <input type="text" class="form-control" id="name" name="name" required value="<%= productEntity.getName()%>">
                     </div>
                     <div class="form-group">
                         <label for="quantity">Số lượng sản phẩm:</label>
@@ -89,7 +90,7 @@
                     </div>
                     <div class="form-group">
                         <label for="price">Giá tiền sản phẩm:</label>
-                        <input type="text" class="form-control" id="price" name="price" required value="<%= new BigDecimal(productEntity.getPrice()).stripTrailingZeros().toPlainString() %>">
+                        <input type="text" class="form-control" id="price" name="price" required value="<%= new BigDecimal(productEntity.getPrice()).stripTrailingZeros().toPlainString()%>">
                     </div>
                     <div class="form-group">
                         <label for="picture">Đường dẫn ảnh của sản phẩm:</label>
@@ -98,6 +99,18 @@
                     <div class="form-group">
                         <label for="description">Miêu tả sản phẩm:</label>
                         <textarea  type="text" class="form-control" rows="7" id="description" name="description" required><%= productEntity.getDescription()%></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Trạng thái:</label>
+                        <select class="form-control" id="status">
+                            <% if (productEntity.getStatus() == 1) { %>
+                            <option value="1" selected>Active</option>
+                            <option value="0">Deactive</option>
+                            <% } else {%>
+                            <option value="1">Active</option>
+                            <option value="0" selected>Deactive</option>
+                            <% } %>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="category">Chọn danh mục cho sản phẩm:</label>
@@ -109,13 +122,17 @@
                         <% for (CategoryEntity c : categoryEntitys) {%>
                         <div class="form-check-inline">
                             <label class="form-check-label">
+                                <% if (categoryIdList.contains(c.getId())) {%>
+                                <input type="checkbox" class="form-check-input" value="<%= c.getId()%>" checked><%= c.getName()%>
+                                <% } else {%>
                                 <input type="checkbox" class="form-check-input" value="<%= c.getId()%>"><%= c.getName()%>
+                                <% } %>
                             </label>
                         </div>
                         <% } %>
                         <% }%>
                     </div>
-                    <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+                    <button type="submit" class="btn btn-primary">Sửa thông tin sản phẩm</button>
                 </form>
             </div>
         </div>
@@ -136,11 +153,15 @@
                     }
 
                     function submitfunction() {
+                        var url = new URL(window.location.href);
+                        var id = url.searchParams.get("id");
+
                         var name = $("#name").val();
                         var quantity = $("#quantity").val();
                         var price = $("#price").val();
                         var picture = $("#picture").val();
                         var description = $("#description").val();
+                        var status = $("#status").val();
 
                         var categoryArray = new Array();
                         var checkbox = $(":checkbox");
@@ -152,22 +173,24 @@
                         });
                         var category = JSON.stringify(categoryArray);
 
-//                        $.ajax({
-//                            url: "dashboard",
-//                            type: 'POST',
-//                            dataType: 'html',
-//                            data: {
-//                                service: "editProduct",
-//                                name: name,
-//                                quantity: quantity,
-//                                price: price,
-//                                picture: picture,
-//                                description: description,
-//                                category: category
-//                            }
-//                        }).done(function (result) {
-//                            notify("Thông báo", result);
-//                        });
+                        $.ajax({
+                            url: "dashboard",
+                            type: 'POST',
+                            dataType: 'html',
+                            data: {
+                                service: "editProduct",
+                                id: id,
+                                name: name,
+                                quantity: quantity,
+                                price: price,
+                                picture: picture,
+                                description: description,
+                                status: status,
+                                category: category
+                            }
+                        }).done(function (result) {
+                            notify("Thông báo", result);
+                        });
 
 
                         return false;

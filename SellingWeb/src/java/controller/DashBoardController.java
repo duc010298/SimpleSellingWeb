@@ -81,9 +81,11 @@ public class DashBoardController extends HttpServlet {
                             dispatch.forward(request, response);
                             return;
                         } else if (subservice.equals("edit")) {
+                            String id = request.getParameter("id");
+                            ArrayList<Integer> categoryIdList = new CategoryDao().getCategoryIdListFromProductId(id);
+                            request.setAttribute("categoryIdList", categoryIdList);
                             HashMap<CategoryEntity, ArrayList<CategoryEntity>> hashMap = new CategoryDao().getCategoryList();
                             request.setAttribute("category", hashMap);
-                            String id = request.getParameter("id");
                             ProductEntity productEntity = new ProductDao().getProductByIdForEdit(id);
                             request.setAttribute("productEntity", productEntity);
                             RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/EditProduct.jsp");
@@ -174,42 +176,42 @@ public class DashBoardController extends HttpServlet {
             }
             switch (service) {
                 case "addProduct":
-                    String name = request.getParameter("name");
-                    String quantity = request.getParameter("quantity");
-                    String priceStr = request.getParameter("price");
-                    float price;
-                    try {
-                        price = Float.parseFloat(priceStr);
-                    } catch (NumberFormatException ex) {
-                        try (PrintWriter out = response.getWriter()) {
-                            out.print("Giá tiền không được nhập chính xác");
-                        }
-                        return;
-                    }
-                    String picture = request.getParameter("picture");
-                    String description = request.getParameter("description");
-                    String categoryJson = request.getParameter("category");
-                    ArrayList<Integer> category = new ArrayList<>();
-                    JSONArray data = (JSONArray) JSONValue.parse(categoryJson);
-                    for (int i = 0; i < data.size(); i++) {
-                        category.add(Integer.parseInt((String) data.get(i)));
-                    }
-                    String idProduct = new ProductDao().addProduct(name, quantity, price, picture, description);
-                    if (idProduct == null) {
-                        try (PrintWriter out = response.getWriter()) {
-                            out.print("Thêm sản phẩm không thành công");
-                        }
-                        return;
-                    }
-                    if (new CategoryDao().addProductToCategory(idProduct, category)) {
-                        try (PrintWriter out = response.getWriter()) {
-                            out.print("Thêm sản phẩm thành công");
-                        }
-                    } else {
-                        try (PrintWriter out = response.getWriter()) {
-                            out.print("Thêm sản phẩm không thành công");
-                        }
-                    }
+//                    String name = request.getParameter("name");
+//                    String quantity = request.getParameter("quantity");
+//                    String priceStr = request.getParameter("price");
+//                    float price;
+//                    try {
+//                        price = Float.parseFloat(priceStr);
+//                    } catch (NumberFormatException ex) {
+//                        try (PrintWriter out = response.getWriter()) {
+//                            out.print("Giá tiền không được nhập chính xác");
+//                        }
+//                        return;
+//                    }
+//                    String picture = request.getParameter("picture");
+//                    String description = request.getParameter("description");
+//                    String categoryJson = request.getParameter("category");
+//                    ArrayList<Integer> category = new ArrayList<>();
+//                    JSONArray data = (JSONArray) JSONValue.parse(categoryJson);
+//                    for (int i = 0; i < data.size(); i++) {
+//                        category.add(Integer.parseInt((String) data.get(i)));
+//                    }
+//                    String idProduct = new ProductDao().addProduct(name, quantity, price, picture, description);
+//                    if (idProduct == null) {
+//                        try (PrintWriter out = response.getWriter()) {
+//                            out.print("Thêm sản phẩm không thành công");
+//                        }
+//                        return;
+//                    }
+//                    if (new CategoryDao().addProductToCategory(idProduct, category)) {
+//                        try (PrintWriter out = response.getWriter()) {
+//                            out.print("Thêm sản phẩm thành công");
+//                        }
+//                    } else {
+//                        try (PrintWriter out = response.getWriter()) {
+//                            out.print("Thêm sản phẩm không thành công");
+//                        }
+//                    }
                     break;
                 case "addCategory1": {
                     String value = request.getParameter("value");
@@ -293,7 +295,52 @@ public class DashBoardController extends HttpServlet {
                     break;
                 }
                 case "editProduct": {
-                    //edit here
+                    String idEdit = request.getParameter("id");
+                    String nameEdit = request.getParameter("name");
+                    String quantityEdit = request.getParameter("quantity");
+                    String priceStrEdit = request.getParameter("price");
+                    float priceEdit;
+                    try {
+                        priceEdit = Float.parseFloat(priceStrEdit);
+                    } catch (NumberFormatException ex) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Giá tiền không được nhập chính xác");
+                        }
+                        return;
+                    }
+                    String pictureEdit = request.getParameter("picture");
+                    String descriptionEdit = request.getParameter("description");
+                    String status = request.getParameter("status");
+                    String categoryJsonEdit = request.getParameter("category");
+                    ArrayList<Integer> categoryEdit = new ArrayList<>();
+                    JSONArray dataEdit = (JSONArray) JSONValue.parse(categoryJsonEdit);
+                    for (int i = 0; i < dataEdit.size(); i++) {
+                        categoryEdit.add(Integer.parseInt((String) dataEdit.get(i)));
+                    }
+                    //remove category
+                    if (!new CategoryDao().removeOldCategory(idEdit)) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Sửa đổi thông tin sản phẩm không thành công");
+                        }
+                        return;
+                    }
+                    
+                    if (!new CategoryDao().addProductToCategory(idEdit, categoryEdit)) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Sửa đổi thông tin sản phẩm không thành công");
+                        }
+                        return;
+                    }
+                    //update
+                    if (new ProductDao().updateProduct(idEdit, nameEdit, quantityEdit, priceEdit, pictureEdit, descriptionEdit, status)) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Sửa đổi sản phẩm thành công");
+                        }
+                    } else {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Sửa đổi sản phẩm không thành công");
+                        }
+                    }
                 }
                 default:
                     break;

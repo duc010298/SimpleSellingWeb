@@ -152,7 +152,7 @@ public class CartController extends HttpServlet {
             }
             String invoiceId = new InvoiceDao().addInvoice(customerEntity.getId(), name, address, phone, totalPrice);
             if (invoiceId == null) {
-                request.setAttribute("status", "Đơn hàng của quý khách chưa được gửi. Vui lòng quay lại giỏ hàng để thử gửi lại hoặc liên hệ với chúng tôi để được trợ giúp.");
+                request.setAttribute("statusCheckout", "Đơn hàng của quý khách chưa được gửi. Vui lòng quay lại giỏ hàng để thử gửi lại hoặc liên hệ với chúng tôi để được trợ giúp.");
                 RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/checkoutStatus.jsp");
                 dispatch.forward(request, response);
                 return;
@@ -160,11 +160,11 @@ public class CartController extends HttpServlet {
             
             if(new InvoiceDetailDao().addInvoiceDetail(invoiceId, productCartEntitys)) {
                 session.removeAttribute("cartDetail");
-                request.setAttribute("status", "Đơn hàng đã được gửi thành công, bộ phận chăm sóc khách hàng sẽ liên hệ với quý khách để hướng dẫn thêm chi tiết");
+                request.setAttribute("statusCheckout", "Đơn hàng đã được gửi thành công, bộ phận chăm sóc khách hàng sẽ liên hệ với quý khách để hướng dẫn thêm chi tiết");
                 RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/checkoutStatus.jsp");
                 dispatch.forward(request, response);
             } else {
-                request.setAttribute("status", "Đơn hàng của quý khách chưa được gửi. Vui lòng quay lại giỏ hàng để thử gửi lại hoặc liên hệ với chúng tôi để được trợ giúp.");
+                request.setAttribute("statusCheckout", "Đơn hàng của quý khách chưa được gửi. Vui lòng quay lại giỏ hàng để thử gửi lại hoặc liên hệ với chúng tôi để được trợ giúp.");
                 RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/checkoutStatus.jsp");
                 dispatch.forward(request, response);
             }

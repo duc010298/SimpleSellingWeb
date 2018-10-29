@@ -26,6 +26,16 @@ public class ProductEntity {
         this.status = status;
         this.lastmodifier = lastmodifier;
     }
+    
+    public ProductEntity(String id, String name, int quantity, float price, String pricture, String description, int status) {
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+        this.pricture = pricture;
+        this.description = description;
+        this.status = status;
+    }
 
     public ProductEntity(String id, String name, int quantity, float price, String pricture, String description) {
         this.id = id;

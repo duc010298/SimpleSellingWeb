@@ -3,7 +3,7 @@
     Created on : Oct 20, 2018, 12:26:02 PM
     Author     : Đỗ Trung Đức
 --%>
-<% String status = (String) request.getAttribute("status");%>
+<% String statusCheckout = (String) request.getAttribute("statusCheckout");%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -17,12 +17,14 @@
         <title>Thông báo</title>
     </head>
     <body>
+        <jsp:include page="/header" />
         <div class="container">
             <div class="jumbotron">
-                <h2><%= status%></h2>
+                <h2><%= statusCheckout%></h2>
                 <p>Bạn sẽ được chuyển về trang chủ trong 3s</p>
             </div>
         </div>
+        <jsp:include page="/header" />
     </body>
     <script>
         setTimeout(function () {

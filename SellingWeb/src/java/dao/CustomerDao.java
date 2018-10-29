@@ -31,7 +31,7 @@ public class CustomerDao {
     public CustomerEntity login(String username, String password) {
         //get encoded password
         String encodedPassword = null;
-        String sqlGetPassword = "select password from Customer where username=?";
+        String sqlGetPassword = "select password from Customer where username=? and status=1";
         try {
             PreparedStatement pre = conn.prepareStatement(sqlGetPassword);
             pre.setString(1, username);

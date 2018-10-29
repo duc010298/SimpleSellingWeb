@@ -136,3 +136,11 @@ footer {
     width: 202px;
     height: 100px;
 }
+
+.table-category {
+    background-color: white;
+}
+
+pre {
+    font-family: inherit;
+}

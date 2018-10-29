@@ -5,9 +5,10 @@
  */
 package controller;
 
-import dao.CustomerDao;
-import entity.CustomerEntity;
+import dao.AdminDao;
+import entity.AdminEntity;
 import java.io.IOException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -20,8 +21,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author Đỗ Trung Đức
  */
-@WebServlet(name = "LoginController", urlPatterns = {"/login"})
-public class LoginController extends HttpServlet {
+@WebServlet(name = "AdminLoginController", urlPatterns = {"/AdminLogin"})
+public class AdminLoginController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,28 +41,37 @@ public class LoginController extends HttpServlet {
             if (session != null) {
                 session.invalidate();
             }
-            response.sendRedirect("index?status=logoutsuccess");
+            request.setAttribute("status", "Đăng xuất thành công");
+            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/AdminLogin.jsp");
+            dispatch.forward(request, response);
+            return;
         }
+        RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/AdminLogin.jsp");
+        dispatch.forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        CustomerEntity customerEntityOld = (CustomerEntity) session.getAttribute("user");
-        CustomerEntity customerEntity;
+        AdminEntity adminEntityOld = (AdminEntity) session.getAttribute("admin");
+        AdminEntity adminEntity;
 
-        if (customerEntityOld != null) {
-            customerEntity = new CustomerDao().loginFromRemeberMe(customerEntityOld.getUsername(), customerEntityOld.getPassword());
-            if (customerEntity != null) {
-                response.sendRedirect("index?status=duplicate&username=" + customerEntityOld.getUsername());
+        if (adminEntityOld != null) {
+            adminEntity = new AdminDao().loginFromRemeberMe(adminEntityOld.getUsername(), adminEntityOld.getPassword());
+            if (adminEntity != null) {
+                request.setAttribute("status", "Bạn đã đăng nhập với tên: " + adminEntity.getUsername());
+                RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/AdminLogin.jsp");
+                dispatch.forward(request, response);
                 return;
             } else {
                 HttpSession session2 = request.getSession(false);
                 if (session2 != null) {
                     session.invalidate();
                 }
-                response.sendRedirect("index?status=sessionout");
+                request.setAttribute("status", "Phiên đã hết hạn");
+                RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/AdminLogin.jsp");
+                dispatch.forward(request, response);
                 return;
             }
         }
@@ -70,22 +80,28 @@ public class LoginController extends HttpServlet {
         String password = request.getParameter("password");
         String rememberMe = request.getParameter("remember-me");
 
-        customerEntity = new CustomerDao().login(username, password);
-        if (customerEntity == null) {
-            response.sendRedirect("index?status=failed");
+        adminEntity = new AdminDao().login(username, password);
+        if (adminEntity == null) {
+            request.setAttribute("status", "Đăng nhập không thành công");
+            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/AdminLogin.jsp");
+            dispatch.forward(request, response);
             return;
         }
 
-        session.setAttribute("user", customerEntity);
-
+        session.setAttribute("admin", adminEntity);
+        
         if (rememberMe != null) {
-            Cookie usernameCookie = new Cookie("username", customerEntity.getUsername());
-            Cookie passwordCookie = new Cookie("password", customerEntity.getPassword());
+            Cookie usernameCookie = new Cookie("username", adminEntity.getUsername());
+            Cookie passwordCookie = new Cookie("password", adminEntity.getPassword());
             usernameCookie.setMaxAge(60 * 60 * 24 * 30);
             passwordCookie.setMaxAge(60 * 60 * 24 * 30);
             response.addCookie(usernameCookie);
             response.addCookie(passwordCookie);
         }
-        response.sendRedirect("index?status=success");
+        
+        
+        response.sendRedirect("dashboard");
+
     }
+
 }

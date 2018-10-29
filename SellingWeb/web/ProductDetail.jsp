@@ -35,7 +35,7 @@
                         <h2 id="product-name-detail"><%= productEntity.getName()%></h2>
                         <p class="product-price-2" id="product-detail-price"><%= MyUtils.priceToString(productEntity.getPrice())%> VNĐ</p>
                         <br>
-                        <p class="description"><%= productEntity.getDescription()%></p>
+                        <pre class="description"><%= productEntity.getDescription()%></pre>
                         <br>
                         <button type="button" class="btn btn-primary btn-add-cart-2" id="<%= productEntity.getId() %>"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                     </div>

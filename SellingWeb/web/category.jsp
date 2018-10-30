@@ -24,7 +24,7 @@
             <% }%>
         </div>
         <div>
-            <img src="https://robohash.org/iustoasperioresautem.jpg?size=1062x628&set=set1" class="rounded img-logo1" id="img-logo1" alt="simple">
+            <img src="https://www.tncstore.vn/image/cache/catalog/11112/NVidia_2080_756x302-756x302.jpg" class="rounded img-logo1" id="img-logo1" alt="simple">
         </div>
     </div>
 </div>

@@ -46,6 +46,39 @@ public class AdminLoginController extends HttpServlet {
             dispatch.forward(request, response);
             return;
         }
+        
+        HttpSession session = request.getSession();
+        AdminEntity adminEntityOld = (AdminEntity) session.getAttribute("admin");
+        AdminEntity adminEntity;
+
+        if (adminEntityOld != null) {
+            adminEntity = new AdminDao().loginFromRemeberMe(adminEntityOld.getUsername(), adminEntityOld.getPassword());
+            if (adminEntity != null) {
+                response.sendRedirect("/dashboard");
+                return;
+            }
+        } else {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                String username = null;
+                String password = null;
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("username")) {
+                        username = cookie.getValue();
+                    }
+                    if (cookie.getName().equals("password")) {
+                        password = cookie.getValue();
+                    }
+                }
+                adminEntity = new AdminDao().loginFromRemeberMe(username, password);
+                if (adminEntity != null) {
+                    session.setAttribute("admin", adminEntity);
+                    request.setAttribute("admin", adminEntity);
+                    response.sendRedirect("/dashboard");
+                    return;
+                }
+            }
+        }
         RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/AdminLogin.jsp");
         dispatch.forward(request, response);
     }
@@ -60,9 +93,7 @@ public class AdminLoginController extends HttpServlet {
         if (adminEntityOld != null) {
             adminEntity = new AdminDao().loginFromRemeberMe(adminEntityOld.getUsername(), adminEntityOld.getPassword());
             if (adminEntity != null) {
-                request.setAttribute("status", "Bạn đã đăng nhập với tên: " + adminEntity.getUsername());
-                RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/AdminLogin.jsp");
-                dispatch.forward(request, response);
+                response.sendRedirect("/dashboard");
                 return;
             } else {
                 HttpSession session2 = request.getSession(false);

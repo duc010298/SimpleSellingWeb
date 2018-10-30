@@ -125,7 +125,7 @@
                     <i class="fas fa-user-circle"></i> <%= customerEntity.getName()%>
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><i class="fas fa-user"></i> Thông tin tài khoản</a>
+                    <a class="dropdown-item" href="customer?service=info&id=<%= customerEntity.getId()%>"><i class="fas fa-user"></i> Thông tin tài khoản</a>
                     <a class="dropdown-item" href="login?logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
             </li>

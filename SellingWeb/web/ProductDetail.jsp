@@ -23,25 +23,25 @@
     </head>
     <body>
         <jsp:include page="/header" />
-        <div class="container">
-            <br>
-            <h2>Chi tiết sản phẩm</h2>
-            <div class="grid-3">
-                <div class="product-box-detail">
-                    <img src="<%= productEntity.getPricture()%>" id="img-product-detail" class="img-product" alt="simple">
-                </div>
-                <div class="product-box-detail">
-                    <div>
-                        <h2 id="product-name-detail"><%= productEntity.getName()%></h2>
-                        <p class="product-price-2" id="product-detail-price"><%= MyUtils.priceToString(productEntity.getPrice())%> VNĐ</p>
-                        <br>
-                        <pre class="description"><%= productEntity.getDescription()%></pre>
-                        <br>
-                        <button type="button" class="btn btn-primary btn-add-cart-2" id="<%= productEntity.getId() %>"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
-                    </div>
+        <br>
+        <h2>Chi tiết sản phẩm</h2>
+        <div class="grid-3">
+            <div class="product-box-detail">
+                <img src="<%= productEntity.getPricture()%>" id="img-product-detail" class="img-product" alt="simple">
+            </div>
+            <div class="product-box-detail">
+                <div>
+                    <h2 id="product-name-detail"><%= productEntity.getName()%></h2>
+                    <p class="product-price-2" id="product-detail-price"><%= MyUtils.priceToString(productEntity.getPrice())%> VNĐ</p>
+                    <br>
+                    <pre class="description"><%= productEntity.getDescription()%></pre>
+                    <br>
+                    <button type="button" class="btn btn-primary btn-add-cart-2" id="<%= productEntity.getId()%>"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                 </div>
             </div>
-            <br>
+        </div>
+        <br>
+        <div class="container">
             <!--Sản phẩm liên quan-->
             <h3><i class="fas fa-calendar-alt"></i> Sản phẩm nổi trội</h3>
             <div class="grid-2">
@@ -145,7 +145,7 @@
             }
 
         });
-        
+
         $(".btn-add-cart").on('click', function () {
             var parent = $(this).parents(".product-box");
             var id = parent.attr("id");

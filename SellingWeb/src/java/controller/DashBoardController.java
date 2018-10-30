@@ -176,42 +176,42 @@ public class DashBoardController extends HttpServlet {
             }
             switch (service) {
                 case "addProduct":
-//                    String name = request.getParameter("name");
-//                    String quantity = request.getParameter("quantity");
-//                    String priceStr = request.getParameter("price");
-//                    float price;
-//                    try {
-//                        price = Float.parseFloat(priceStr);
-//                    } catch (NumberFormatException ex) {
-//                        try (PrintWriter out = response.getWriter()) {
-//                            out.print("Giá tiền không được nhập chính xác");
-//                        }
-//                        return;
-//                    }
-//                    String picture = request.getParameter("picture");
-//                    String description = request.getParameter("description");
-//                    String categoryJson = request.getParameter("category");
-//                    ArrayList<Integer> category = new ArrayList<>();
-//                    JSONArray data = (JSONArray) JSONValue.parse(categoryJson);
-//                    for (int i = 0; i < data.size(); i++) {
-//                        category.add(Integer.parseInt((String) data.get(i)));
-//                    }
-//                    String idProduct = new ProductDao().addProduct(name, quantity, price, picture, description);
-//                    if (idProduct == null) {
-//                        try (PrintWriter out = response.getWriter()) {
-//                            out.print("Thêm sản phẩm không thành công");
-//                        }
-//                        return;
-//                    }
-//                    if (new CategoryDao().addProductToCategory(idProduct, category)) {
-//                        try (PrintWriter out = response.getWriter()) {
-//                            out.print("Thêm sản phẩm thành công");
-//                        }
-//                    } else {
-//                        try (PrintWriter out = response.getWriter()) {
-//                            out.print("Thêm sản phẩm không thành công");
-//                        }
-//                    }
+                    String name = request.getParameter("name");
+                    String quantity = request.getParameter("quantity");
+                    String priceStr = request.getParameter("price");
+                    float price;
+                    try {
+                        price = Float.parseFloat(priceStr);
+                    } catch (NumberFormatException ex) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Giá tiền không được nhập chính xác");
+                        }
+                        return;
+                    }
+                    String picture = request.getParameter("picture");
+                    String description = request.getParameter("description");
+                    String categoryJson = request.getParameter("category");
+                    ArrayList<Integer> category = new ArrayList<>();
+                    JSONArray data = (JSONArray) JSONValue.parse(categoryJson);
+                    for (int i = 0; i < data.size(); i++) {
+                        category.add(Integer.parseInt((String) data.get(i)));
+                    }
+                    String idProduct = new ProductDao().addProduct(name, quantity, price, picture, description);
+                    if (idProduct == null) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Thêm sản phẩm không thành công");
+                        }
+                        return;
+                    }
+                    if (new CategoryDao().addProductToCategory(idProduct, category)) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Thêm sản phẩm thành công");
+                        }
+                    } else {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Thêm sản phẩm không thành công");
+                        }
+                    }
                     break;
                 case "addCategory1": {
                     String value = request.getParameter("value");

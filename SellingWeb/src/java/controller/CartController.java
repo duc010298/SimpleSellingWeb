@@ -81,7 +81,7 @@ public class CartController extends HttpServlet {
                 productCartEntitys.add(new ProductCartEntity(1, productEntity.getId(), productEntity.getName(), productEntity.getQuantity(), productEntity.getPrice(), productEntity.getPricture()));
                 session.setAttribute("cartDetail", productCartEntitys);
                 try (PrintWriter out = response.getWriter()) {
-                    out.print("Add to cart successfully");
+                    out.print("Thêm vào giỏ hàng thành công");
                 }
                 return;
             } else {
@@ -91,7 +91,7 @@ public class CartController extends HttpServlet {
                         cartEntity.setQuantityInCart(++quantityInCart);
                         session.setAttribute("cartDetail", productCartEntitys);
                         try (PrintWriter out = response.getWriter()) {
-                            out.print("Add to cart successfully");
+                            out.print("Thêm vào giỏ hàng thành công");
                         }
                         return;
                     }
@@ -99,7 +99,7 @@ public class CartController extends HttpServlet {
                 productCartEntitys.add(new ProductCartEntity(1, productEntity.getId(), productEntity.getName(), productEntity.getQuantity(), productEntity.getPrice(), productEntity.getPricture()));
                 session.setAttribute("cartDetail", productCartEntitys);
                 try (PrintWriter out = response.getWriter()) {
-                    out.print("Add to cart successfully");
+                    out.print("Thêm vào giỏ hàng thành công");
                 }
             }
         }

@@ -14,9 +14,9 @@ public class InvoiceDetailEntity {
     private String invoiceId;
     private String productId;
     private int quantity;
-    private int price;
+    private float price;
 
-    public InvoiceDetailEntity(String invoiceId, String productId, int quantity, int price) {
+    public InvoiceDetailEntity(String invoiceId, String productId, int quantity, float price) {
         this.invoiceId = invoiceId;
         this.productId = productId;
         this.quantity = quantity;
@@ -47,7 +47,7 @@ public class InvoiceDetailEntity {
         this.quantity = quantity;
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 

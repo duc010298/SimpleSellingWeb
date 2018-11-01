@@ -23,19 +23,35 @@ public class ProductDao {
         conn = new DBConnect().getConnection();
     }
 
-    public ArrayList<ProductEntity> getTop20Product() {
+    public ArrayList<ProductEntity> getTopByPage(int page) {
+        int begin;
+        int end;
+        page--;
+        if (page == 0) {
+            begin = 1;
+            end = 20;
+        } else {
+            begin = page * 20 + 1;
+            end = begin + 19;
+        }
+
         ArrayList<ProductEntity> productEntities = new ArrayList<>();
-        String sql = "select top 20 id, name, quantity, price, picture from Product where status=1 order by convert(DateTime, lastmodifier,101) desc";
+        String sql = "SELECT id, name, quantity, price, picture, description, status, lastmodifier FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY lastmodifier DESC) AS RowNum FROM Product  where status=1) AS MyTable WHERE MyTable.RowNum BETWEEN ? AND ?";
         try {
-            Statement sta = conn.createStatement();
-            ResultSet rs = sta.executeQuery(sql);
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, begin);
+            pre.setInt(2, end);
+            ResultSet rs = pre.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("id");
                 String name = rs.getNString("name");
                 int quantity = rs.getInt("quantity");
                 float price = rs.getFloat("price");
                 String picture = rs.getString("picture");
-                productEntities.add(new ProductEntity(id, name, quantity, price, picture));
+                String description = rs.getNString("description");
+                int status = rs.getInt("status");
+                Date lastmodifier = rs.getDate("lastmodifier");
+                productEntities.add(new ProductEntity(id, name, quantity, price, picture, description, status, lastmodifier));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,7 +72,7 @@ public class ProductDao {
         }
 
         ArrayList<ProductEntity> productEntities = new ArrayList<>();
-        String sql = "SELECT id, name, quantity, price, picture, description, status, lastmodifier FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY name) AS RowNum FROM Product) AS MyTable WHERE MyTable.RowNum BETWEEN ? AND ?";
+        String sql = "SELECT id, name, quantity, price, picture, description, status, lastmodifier FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY lastmodifier DESC) AS RowNum FROM Product) AS MyTable WHERE MyTable.RowNum BETWEEN ? AND ?";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, begin);
@@ -103,6 +119,58 @@ public class ProductDao {
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, categoryId);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getNString("name");
+                int quantity = rs.getInt("quantity");
+                float price = rs.getFloat("price");
+                String picture = rs.getString("picture");
+                productEntities.add(new ProductEntity(id, name, quantity, price, picture));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return productEntities;
+    }
+
+    public ArrayList<ProductEntity> getByCategoryAndPage(String categoryId, String sortBy, int page) {
+        int begin;
+        int end;
+        page--;
+        if (page == 0) {
+            begin = 1;
+            end = 20;
+        } else {
+            begin = page * 20 + 1;
+            end = begin + 19;
+        }
+        ArrayList<ProductEntity> productEntities = new ArrayList<>();
+        String sql = "SELECT id, name, quantity, price, picture FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY name) AS RowNum FROM Product inner join Category_Product on Product.id=Category_Product.productID and Category_Product.categoryID = ? ";
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "priceASC":
+                    sql += "order by price ASC";
+                    break;
+                case "priceDESC":
+                    sql += "order by price DESC";
+                    break;
+                case "nameASC":
+                    sql += "order by name ASC";
+                    break;
+                case "nameDESC":
+                    sql += "order by name DESC";
+                    break;
+                default:
+                    break;
+            }
+        }
+        sql += " ) AS MyTable WHERE MyTable.RowNum BETWEEN ? AND ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, categoryId);
+            pre.setInt(2, begin);
+            pre.setInt(3, end);
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("id");
@@ -304,6 +372,75 @@ public class ProductDao {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+
+    public boolean reduceQuantity(String productId, int quantity) {
+        ProductEntity entity = getProductById(productId);
+        int newQuantity = entity.getQuantity() - quantity;
+        String sql = "update Product set quantity=? where id=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, newQuantity);
+            pre.setString(2, productId);
+            return pre.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+    
+    public boolean increaseQuantity(String productId, int quantity) {
+        ProductEntity entity = getProductById(productId);
+        int newQuantity = entity.getQuantity() + quantity;
+        String sql = "update Product set quantity=? where id=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, newQuantity);
+            pre.setString(2, productId);
+            return pre.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
+    public ArrayList<ProductEntity> getProductByPageAndSearch(int pageInt, String content) {
+        //        int begin;
+        //        int end;
+        //        page--;
+        //        if (page == 0) {
+        //            begin = 1;
+        //            end = 20;
+        //        } else {
+        //            begin = page * 20 + 1;
+        //            end = begin + 19;
+        //        }
+        //
+        //        ArrayList<ProductEntity> productEntities = new ArrayList<>();
+        //        String sql = "SELECT id, name, quantity, price, picture, description, status, lastmodifier FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY name) AS RowNum FROM Product) AS MyTable WHERE MyTable.RowNum BETWEEN ? AND ?";
+        //        try {
+        //            PreparedStatement pre = conn.prepareStatement(sql);
+        //            pre.setInt(1, begin);
+        //            pre.setInt(2, end);
+        //            ResultSet rs = pre.executeQuery();
+        //            while (rs.next()) {
+        //                String id = rs.getString("id");
+        //                String name = rs.getNString("name");
+        //                int quantity = rs.getInt("quantity");
+        //                float price = rs.getFloat("price");
+        //                String picture = rs.getString("picture");
+        //                String description = rs.getNString("description");
+        //                int status = rs.getInt("status");
+        //                Date lastmodifier = rs.getDate("lastmodifier");
+        //                productEntities.add(new ProductEntity(id, name, quantity, price, picture, description, status, lastmodifier));
+        //            }
+        //        } catch (SQLException ex) {
+        //            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        //        }
+        //        return productEntities;
+        return null;
     }
 
 }

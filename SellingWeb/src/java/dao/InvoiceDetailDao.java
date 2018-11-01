@@ -6,9 +6,11 @@
 package dao;
 
 import config.DBConnect;
+import entity.InvoiceDetailEntity;
 import entity.ProductCartEntity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -49,5 +51,24 @@ public class InvoiceDetailDao {
             return false;
         }
         return count == productCartEntitys.size();
+    }
+    
+    public ArrayList<InvoiceDetailEntity> getDetailById(String id) {
+        ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = new ArrayList<>();
+        String sql = "select productId, quantity, price from InvoiceDetail where invoiceId=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, id);
+            ResultSet rs = pre.executeQuery();
+            while(rs.next()) {
+                String productId = rs.getString("productId");
+                int quantity = rs.getInt("quantity");
+                float price = rs.getFloat("price");
+                invoiceDetailEntitys.add(new InvoiceDetailEntity(id, productId, quantity, price));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InvoiceDetailDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return invoiceDetailEntitys;
     }
 }

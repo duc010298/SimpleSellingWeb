@@ -103,43 +103,44 @@
                 </form>
             </div>
         </div>
-        <br>
-        <div class="jumbotron">
-            <% for (Map.Entry m : hashMap.entrySet()) { %>
-            <% CategoryEntity categoryEntity = (CategoryEntity) m.getKey();%>
-            <h3 class="mr-sm-2"><%= categoryEntity.getName()%></h3>
-            <button class="btn btn-primary mr-sm-2 editCategory" name="<%= categoryEntity.getId()%>">Edit</button>
-            <% if (categoryEntity.isStatus()) {%>
-            <button class="btn btn-danger mr-sm-2 disableCategory" name="<%= categoryEntity.getId()%>">Disable</button>
-            <% } else {%>
-            <button class="btn btn-success mr-sm-2 enableCategory" name="<%= categoryEntity.getId()%>">Enable</button>
-            <% } %>
-            <table class="table table-bordered table-category">
-                <thead>
-                    <tr>
-                        <th>Tên danh mục</th>
-                        <th>Sửa</th>
-                        <th>Đổi trạng thái</th>
-                    </tr>
-                </thead>
-                <% ArrayList<CategoryEntity> categoryEntitys = (ArrayList<CategoryEntity>) m.getValue(); %>
-                <% for (CategoryEntity c : categoryEntitys) {%>
-                <tbody>
-                    <tr>
-                        <td><%= c.getName()%></td>
-                        <td><button class="btn btn-primary editCategory" name="<%= c.getId()%>">Edit</button></td>
-                        <td>
-                            <% if (c.isStatus()) {%>
-                            <button class="btn btn-danger disableCategory" name="<%= c.getId()%>">Disable</button>
-                            <% } else {%>
-                            <button class="btn btn-success enableCategory" name="<%= c.getId()%>">Enable</button>
-                            <% } %>
-                        </td>
-                    </tr>
-                </tbody>
+        <div class="container">
+            <div class="jumbotron">
+                <% for (Map.Entry m : hashMap.entrySet()) { %>
+                <% CategoryEntity categoryEntity = (CategoryEntity) m.getKey();%>
+                <h3 class="mr-sm-2"><%= categoryEntity.getName()%></h3>
+                <button class="btn btn-primary mr-sm-2 editCategory" name="<%= categoryEntity.getId()%>">Edit</button>
+                <% if (categoryEntity.isStatus()) {%>
+                <button class="btn btn-danger mr-sm-2 disableCategory" name="<%= categoryEntity.getId()%>">Disable</button>
+                <% } else {%>
+                <button class="btn btn-success mr-sm-2 enableCategory" name="<%= categoryEntity.getId()%>">Enable</button>
                 <% } %>
-            </table>
-            <% } %>
+                <table class="table table-bordered table-category">
+                    <thead>
+                        <tr>
+                            <th>Tên danh mục</th>
+                            <th>Sửa</th>
+                            <th>Đổi trạng thái</th>
+                        </tr>
+                    </thead>
+                    <% ArrayList<CategoryEntity> categoryEntitys = (ArrayList<CategoryEntity>) m.getValue(); %>
+                    <% for (CategoryEntity c : categoryEntitys) {%>
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%"><%= c.getName()%></td>
+                            <td style="width: 25%"><button class="btn btn-primary editCategory" name="<%= c.getId()%>">Edit</button></td>
+                            <td style="width: 25%">
+                                <% if (c.isStatus()) {%>
+                                <button class="btn btn-danger disableCategory" name="<%= c.getId()%>">Disable</button>
+                                <% } else {%>
+                                <button class="btn btn-success enableCategory" name="<%= c.getId()%>">Enable</button>
+                                <% } %>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <% } %>
+                </table>
+                <% } %>
+            </div>
         </div>
 
         <footer class="page-footer font-small blue">
@@ -213,7 +214,7 @@
             if (newName == null || newName == "") {
                 return;
             }
-            
+
             var name = $(this).attr("name");
             $.ajax({
                 url: "dashboard",

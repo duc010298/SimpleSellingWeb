@@ -21,7 +21,7 @@
         <div class="container">
             <div class="jumbotron">
                 <h2><%= statusCheckout%></h2>
-                <p>Bạn sẽ được chuyển về trang chủ trong 3s</p>
+                <p>Bạn sẽ được chuyển về trang chủ trong 5 giây</p>
             </div>
         </div>
         <jsp:include page="/header" />
@@ -29,6 +29,6 @@
     <script>
         setTimeout(function () {
             window.location.href = "index";
-        }, 3000);
+        }, 5000);
     </script>
 </html>

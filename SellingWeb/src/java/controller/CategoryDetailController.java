@@ -30,21 +30,50 @@ public class CategoryDetailController extends HttpServlet {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
-        
-        String id = request.getParameter("categoryId");
-        String sortBy = request.getParameter("sortBy");
-        ArrayList<ProductEntity> productEntitys = new ProductDao().getByCategory(id, sortBy);
-        String category = new CategoryDao().getNameById(id);
-        request.setAttribute("category", category);
-        request.setAttribute("productEntities", productEntitys);
-        RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/CategoryDetail.jsp");
-        dispatch.forward(request, response);
+
+        String page = request.getParameter("page");
+        if (page == null) {
+            request.setAttribute("page", 1);
+            String id = request.getParameter("categoryId");
+            String sortBy = request.getParameter("sortBy");
+            ArrayList<ProductEntity> productEntitys = new ProductDao().getByCategory(id, sortBy);
+            String category = new CategoryDao().getNameById(id);
+            request.setAttribute("category", category);
+            request.setAttribute("productEntities", productEntitys);
+            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/CategoryDetail.jsp");
+            dispatch.forward(request, response);
+        } else {
+            try {
+                int pageInt = Integer.parseInt(page);
+                request.setAttribute("page", pageInt);
+                //call page
+                String id = request.getParameter("categoryId");
+                String sortBy = request.getParameter("sortBy");
+                ArrayList<ProductEntity> productEntitys = new ProductDao().getByCategoryAndPage(id, sortBy, pageInt);
+                String category = new CategoryDao().getNameById(id);
+                request.setAttribute("category", category);
+                request.setAttribute("productEntities", productEntitys);
+                RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/CategoryDetail.jsp");
+                dispatch.forward(request, response);
+            } catch (NumberFormatException ex) {
+                request.setAttribute("page", 1);
+                String id = request.getParameter("categoryId");
+                String sortBy = request.getParameter("sortBy");
+                ArrayList<ProductEntity> productEntitys = new ProductDao().getByCategory(id, sortBy);
+                String category = new CategoryDao().getNameById(id);
+                request.setAttribute("category", category);
+                request.setAttribute("productEntities", productEntitys);
+                RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/CategoryDetail.jsp");
+                dispatch.forward(request, response);
+            }
+        }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
 }

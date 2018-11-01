@@ -3,6 +3,7 @@
 <%@page import="java.util.ArrayList"%>
 <% ArrayList<ProductEntity> productEntities = (ArrayList<ProductEntity>) request.getAttribute("productEntities"); %>
 <% String category = (String) request.getAttribute("category");%>
+<% int pageInt = (int) request.getAttribute("page");%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -41,12 +42,37 @@
                         <p class="product-price"><%= MyUtils.priceToString(entity.getPrice())%> VNĐ</p>
                         <% if (entity.getQuantity() != 0) {%>
                         <p class="product-status-active"><i class="fas fa-shopping-bag"></i> Còn hàng</p>
+                        <button type="button" class="btn btn-primary btn-add-cart"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                         <% } else { %>
                         <p class="product-status-deactive"><i class="fas fa-shopping-bag"></i> Liên hệ</p>
+                        <button type="button" class="btn btn-primary btn-add-cart" disabled><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                         <% } %>
-                        <button type="button" class="btn btn-primary btn-add-cart"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                     </div>
                 </div>
+                <% }%>
+            </div>
+            <div class="btn-group">
+                <% if (productEntities.size() != 0) { %>
+                <% if (pageInt != 1) {%>
+                <button class="btn btn-page" name="<%= pageInt - 1%>"><</button>
+                <% }%>
+                <% if (pageInt > 3) {%>
+                <button class="btn btn-page" name="<%= pageInt - 3%>"><%= pageInt - 3%></button>
+                <% }%>
+                <% if (pageInt > 2) {%>
+                <button class="btn btn-page" name="<%= pageInt - 2%>"><%= pageInt - 2%></button>
+                <% }%>
+                <% if (pageInt > 1) {%>
+                <button class="btn btn-page" name="<%= pageInt - 1%>"><%= pageInt - 1%></button>
+                <% }%>
+                <button class="btn btn-primary btn-page" name="<%= pageInt%>"><%= pageInt%></button>
+                <button class="btn btn-page" name="<%= pageInt + 1%>"><%= pageInt + 1%></button>
+                <button class="btn btn-page" name="<%= pageInt + 2%>"><%= pageInt + 2%></button>
+                <button class="btn btn-page" name="<%= pageInt + 3%>"><%= pageInt + 3%></button>
+                <button class="btn btn-page" name="<%= pageInt + 1%>">></button>
+                <% } else {%>
+                <button class="btn btn-primary btn-page" name="<%= pageInt - 1%>"><</button>
+                <button class="btn btn-primary btn-page" name="1">1</button>
                 <% }%>
             </div>
         </div>
@@ -155,5 +181,13 @@
         } else if (sortBy === "nameDESC") {
             document.getElementById("sort-product").selectedIndex = "4";
         }
+
+        $(".btn-page").on('click', function () {
+            var page = $(this).attr("name");
+            var url = new URL(window.location.href);
+            var categoryId = url.searchParams.get("categoryId");
+            var sortBy = url.searchParams.get("sortBy");
+            window.location.href = document.location.origin + "/categoryDetail?categoryId=" + categoryId + "&sortBy=" + sortBy + "&page=" + page;
+        });
     </script>
 </html>

@@ -61,8 +61,18 @@ public class HomeController extends HttpServlet {
                 request.setAttribute("status", "Bạn cần đăng nhập trước khi checkout");
             }
         }
+        
+        int pageInt = 0;
+        String page = request.getParameter("page");
+        if(page == null) pageInt = 1;
+        try {
+            pageInt = Integer.parseInt(page);
+        } catch(NumberFormatException ex) {
+            pageInt = 1;
+        }
+        request.setAttribute("page", pageInt);
 
-        ArrayList<ProductEntity> productEntities = new ProductDao().getTop20Product();
+        ArrayList<ProductEntity> productEntities = new ProductDao().getTopByPage(pageInt);
         request.setAttribute("productEntities", productEntities);
         RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/home.jsp");
         dispatch.forward(request, response);

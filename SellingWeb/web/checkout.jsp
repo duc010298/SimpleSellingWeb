@@ -43,7 +43,7 @@
                             <td class="align-middle"><img src="<%= cartEntity.getPricture()%>" class="img-product-3" alt="simple"></td>
                             <td class="align-middle"><%= cartEntity.getName()%></td>
                             <td class="align-middle"><span class="price"><%= MyUtils.priceToString(cartEntity.getPrice())%></span> VNĐ</td>
-                            <td class="align-middle"><input name="<%= cartEntity.getId()%>" class="quantityInCart" min="1" max="<%= cartEntity.getQuantity() %>" type="number" value ="<%= cartEntity.getQuantityInCart()%>" class="form-control quantity-input"></td>
+                            <td class="align-middle"><input name="<%= cartEntity.getId()%>" class="quantityInCart" min="1" type="number" value ="<%= cartEntity.getQuantityInCart()%>" class="form-control quantity-input"></td>
                             <td class="align-middle"><span class="totalPrice-1"><%= MyUtils.priceToString(cartEntity.getPrice() * cartEntity.getQuantityInCart())%></span> VNĐ</td>
                             <td class="align-middle"><button type="button" name="<%= cartEntity.getId()%>" class="btn btn-link remove-product"><h2><i class="fas fa-trash-alt"></i></h2></button></td>
                         </tr>
@@ -60,15 +60,15 @@
                     <input type="text" name="service" value="checkout" hidden>
                     <h2>Thông tin người mua hàng:</h2>
                     <div class="form-group">
-                        <label for="name">Họ và tên:</label>
+                        <label for="name">Họ và tên người nhận hàng:</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Nhập họ và tên" required>
                     </div>
                     <div class="form-group">
-                        <label for="address">Địa chị:</label>
+                        <label for="address">Địa chị giao hàng:</label>
                         <input type="text" class="form-control" id="address" name="address" placeholder="Nhập địa chỉ" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Số điện thoại:</label>
+                        <label for="phone">Số điện thoại người nhận hàng:</label>
                         <input type="text" class="form-control" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Checkout</button>

@@ -144,3 +144,13 @@ footer {
 pre {
     font-family: inherit;
 }
+
+.grid-7 {
+    
+}
+
+.grid-8 {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-column-gap: 5px;
+}

@@ -190,6 +190,9 @@
                             }
                         }).done(function (result) {
                             notify("Thông báo", result);
+                            $(".btn-danger").on('click', function () {
+                                window.location.href = "dashboard";
+                            });
                         });
 
 

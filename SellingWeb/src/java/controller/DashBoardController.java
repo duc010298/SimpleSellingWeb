@@ -7,9 +7,15 @@ package controller;
 
 import dao.AdminDao;
 import dao.CategoryDao;
+import dao.CustomerDao;
+import dao.InvoiceDao;
+import dao.InvoiceDetailDao;
 import dao.ProductDao;
 import entity.AdminEntity;
 import entity.CategoryEntity;
+import entity.CustomerEntity;
+import entity.InvoiceDetailEntity;
+import entity.InvoiceEntity;
 import entity.ProductEntity;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -91,6 +97,21 @@ public class DashBoardController extends HttpServlet {
                             RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/EditProduct.jsp");
                             dispatch.forward(request, response);
                             return;
+                        } else if (subservice.equals("search")) {
+                            String content = request.getParameter("content");
+                            String page = request.getParameter("page");
+                            int pageInt;
+                            try {
+                                pageInt = Integer.parseInt(page);
+                            } catch (NumberFormatException ex) {
+                                pageInt = 1;
+                            }
+                            request.setAttribute("page", pageInt);
+                            ArrayList<ProductEntity> productEntitys = new ProductDao().getProductByPageAndSearch(pageInt, content);
+                            request.setAttribute("productEntitys", productEntitys);
+                            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/ProductManager.jsp");
+                            dispatch.forward(request, response);
+                            return;
                         }
                     }
 
@@ -121,6 +142,39 @@ public class DashBoardController extends HttpServlet {
                     break;
                 }
                 case "InvoiceManger": {
+                    String subservice = request.getParameter("subservice");
+                    if (subservice != null) {
+                        if (subservice.equals("InvoiceDetail")) {
+                            String id = request.getParameter("id");
+                            InvoiceEntity invoiceEntity = new InvoiceDao().getInvoiceById(id);
+                            CustomerEntity customerEntity = new CustomerDao().getInfoFromId(invoiceEntity.getCustomerId());
+                            ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = new InvoiceDetailDao().getDetailById(id);
+                            ArrayList<ProductEntity> productEntitys = new ArrayList<>();
+                            for (InvoiceDetailEntity detailEntity : invoiceDetailEntitys) {
+                                ProductEntity entity = new ProductDao().getProductById(detailEntity.getProductId());
+                                productEntitys.add(entity);
+                            }
+
+                            request.setAttribute("invoiceEntity", invoiceEntity);
+                            request.setAttribute("customerEntity", customerEntity);
+                            request.setAttribute("invoiceDetailEntitys", invoiceDetailEntitys);
+                            request.setAttribute("productEntitys", productEntitys);
+                            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/InvoiceDetail.jsp");
+                            dispatch.forward(request, response);
+                        }
+                        return;
+                    }
+                    String page = request.getParameter("page");
+                    int pageInt;
+                    try {
+                        pageInt = Integer.parseInt(page);
+                    } catch (NumberFormatException ex) {
+                        pageInt = 1;
+                    }
+                    request.setAttribute("page", pageInt);
+
+                    ArrayList<InvoiceEntity> invoiceEntitys = new InvoiceDao().getInvoiceListByPage(pageInt);
+                    request.setAttribute("invoiceEntitys", invoiceEntitys);
                     RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/InvoiceManger.jsp");
                     dispatch.forward(request, response);
                     break;
@@ -324,7 +378,7 @@ public class DashBoardController extends HttpServlet {
                         }
                         return;
                     }
-                    
+
                     if (!new CategoryDao().addProductToCategory(idEdit, categoryEdit)) {
                         try (PrintWriter out = response.getWriter()) {
                             out.print("Sửa đổi thông tin sản phẩm không thành công");
@@ -341,6 +395,20 @@ public class DashBoardController extends HttpServlet {
                             out.print("Sửa đổi sản phẩm không thành công");
                         }
                     }
+                }
+                case "updateStatusInvoice": {
+                    String status = request.getParameter("status");
+                    String id = request.getParameter("id");
+                    if (new InvoiceDao().updateStatusInvoice(id, status)) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Đổi trạng thái thành công");
+                        }
+                    } else {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Đổi trạng thái không thành công");
+                        }
+                    }
+                    break;
                 }
                 default:
                     break;

@@ -55,10 +55,11 @@
                         <p class="product-price"><%= MyUtils.priceToString(entity.getPrice())%> VNĐ</p>
                         <% if (entity.getQuantity() != 0) {%>
                         <p class="product-status-active"><i class="fas fa-shopping-bag"></i> Còn hàng</p>
+                        <button type="button" class="btn btn-primary btn-add-cart"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                         <% } else { %>
                         <p class="product-status-deactive"><i class="fas fa-shopping-bag"></i> Liên hệ</p>
+                        <button type="button" class="btn btn-primary btn-add-cart" disabled><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                         <% } %>
-                        <button type="button" class="btn btn-primary btn-add-cart"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
                     </div>
                 </div>
                 <% }%>

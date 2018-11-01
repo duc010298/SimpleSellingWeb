@@ -34,8 +34,18 @@ public class ProductDetail extends HttpServlet {
 
         ProductEntity entity = new ProductDao().getProductById(id);
         request.setAttribute("entity", entity);
+        
+        int pageInt = 0;
+        String page = request.getParameter("page");
+        if(page == null) pageInt = 1;
+        try {
+            pageInt = Integer.parseInt(page);
+        } catch(NumberFormatException ex) {
+            pageInt = 1;
+        }
+        request.setAttribute("page", pageInt);
 
-        ArrayList<ProductEntity> productEntities = new ProductDao().getTop20Product();
+        ArrayList<ProductEntity> productEntities = new ProductDao().getTopByPage(pageInt);
         request.setAttribute("productEntities", productEntities);
 
         RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/ProductDetail.jsp");

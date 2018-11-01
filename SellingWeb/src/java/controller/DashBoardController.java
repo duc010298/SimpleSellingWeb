@@ -100,6 +100,7 @@ public class DashBoardController extends HttpServlet {
                         } else if (subservice.equals("search")) {
                             String content = request.getParameter("content");
                             String page = request.getParameter("page");
+                            String status = request.getParameter("status");
                             int pageInt;
                             try {
                                 pageInt = Integer.parseInt(page);
@@ -107,8 +108,11 @@ public class DashBoardController extends HttpServlet {
                                 pageInt = 1;
                             }
                             request.setAttribute("page", pageInt);
-                            ArrayList<ProductEntity> productEntitys = new ProductDao().getProductByPageAndSearch(pageInt, content);
+                            ArrayList<ProductEntity> productEntitys = new ProductDao().getProductByPageAndSearch(pageInt, content, status);
                             request.setAttribute("productEntitys", productEntitys);
+                            
+                            request.setAttribute("content", content);
+                            request.setAttribute("status", status);
                             RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/ProductManager.jsp");
                             dispatch.forward(request, response);
                             return;

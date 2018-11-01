@@ -174,10 +174,10 @@
             var status = $("#status").val();
             //validate quantity
         <% if (canAccept) { %>
-                if(status == 1 || status == 2) {
-                    notify("Lỗi", "Bạn không thể đổi trạng thái, số lượng hàng trong kho không đủ");
-                    return;
-                }
+            if (status == 1 || status == 2) {
+                notify("Lỗi", "Bạn không thể đổi trạng thái, số lượng hàng trong kho không đủ");
+                return;
+            }
         <% }%>
 
             var url = new URL(window.location.href);

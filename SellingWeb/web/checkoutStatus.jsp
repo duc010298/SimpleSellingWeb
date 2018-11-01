@@ -21,14 +21,21 @@
         <div class="container">
             <div class="jumbotron">
                 <h2><%= statusCheckout%></h2>
-                <p>Bạn sẽ được chuyển về trang chủ trong 5 giây</p>
+                <p>Bạn sẽ được chuyển về trang chủ trong <span id="countdown"></span> giây</p>
+                <a href="index" class="btn btn-primary"><i class="fas fa-home"></i> Về trang chủ</a>
             </div>
         </div>
         <jsp:include page="/header" />
     </body>
     <script>
-        setTimeout(function () {
-            window.location.href = "index";
-        }, 5000);
+        var timeleft = 15;
+        var downloadTimer = setInterval(function () {
+            document.getElementById("countdown").innerHTML = --timeleft;
+            if (timeleft <= 0) {
+                clearInterval(downloadTimer);
+            } else {
+                window.location.href = "index";
+            }
+        }, 1000);
     </script>
 </html>

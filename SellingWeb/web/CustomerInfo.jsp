@@ -58,8 +58,10 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
                 </form>
-                <hr>
+            </div>
+            <div class="jumbotron">
                 <h3>Đổi mật khẩu</h3>
+                <hr>
                 <form action="" onsubmit="return changePass()">
                     <div class="form-group">
                         <label for="oldPass">Mật khẩu cũ:</label>
@@ -76,7 +78,12 @@
                     <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
                 </form>
             </div>
-            <div class="jumbotron"></div>
+        </div>
+        <div class="jumbotron">
+            <h3>Danh sách đơn hàng</h3>
+            <hr>
+
+            <!--to be continued-->
         </div>
         <%@include file="footer.jsp" %>
     </body>
@@ -91,7 +98,7 @@
                     notify("Lỗi", "Chưa nhập mật khẩu");
                     return;
                 }
-                
+
                 var id = $("#customerId").val();
                 var name = $("#name").val();
                 var address = $("#address").val();
@@ -122,24 +129,24 @@
             var oldPass = $("#oldPass").val();
             var newPass = $("#newPass").val();
             var confirmPassword = $("#confirmPassword").val();
-            if(newPass != confirmPassword) {
+            if (newPass != confirmPassword) {
                 notify("Lỗi", "Mật khẩu không đúng");
                 return;
             }
-            
+
             $.ajax({
-                    url: "customer",
-                    type: 'POST',
-                    dataType: 'html',
-                    data: {
-                        service: "changePassword",
-                        id: id,
-                        oldPass: oldPass,
-                        newPass: newPass
-                    }
-                }).done(function (result) {
-                    notify("Thông báo", result);
-                });
+                url: "customer",
+                type: 'POST',
+                dataType: 'html',
+                data: {
+                    service: "changePassword",
+                    id: id,
+                    oldPass: oldPass,
+                    newPass: newPass
+                }
+            }).done(function (result) {
+                notify("Thông báo", result);
+            });
             return false;
         }
     </script>

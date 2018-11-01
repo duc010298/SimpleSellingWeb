@@ -71,7 +71,11 @@
                         <label for="phone">Số điện thoại người nhận hàng:</label>
                         <input type="text" class="form-control" id="phone" name="phone" placeholder="Nhập số điện thoại" required>
                     </div>
+                    <% if(!productCartEntitys.isEmpty()) { %>
                     <button type="submit" class="btn btn-primary">Checkout</button>
+                    <% } else { %>
+                    <button type="submit" class="btn" disabled>Checkout</button>
+                    <% } %>
                 </form>
             </div>
         </div>

@@ -12,6 +12,14 @@
 <% AdminEntity adminEntity = (AdminEntity) request.getAttribute("admin");%>
 <% ArrayList<ProductEntity> productEntitys = (ArrayList<ProductEntity>) request.getAttribute("productEntitys"); %>
 <% int pageInt = (int) request.getAttribute("page");%>
+<% String content = (String) request.getAttribute("content"); %>
+<% String status = (String) request.getAttribute("status"); %>
+<% if (content == null) {
+        content = "";
+    } %>
+<% if (status == null) {
+        status = "";
+    }%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -75,11 +83,45 @@
         <form class="form-inline" method="get" action="dashboard">
             <input type="text" name="service" value="ProductManger" hidden>
             <input type="text" name="subservice" value="search" hidden>
-            <input class="form-control" name="content" type="text" placeholder="Tìm kiếm">
+            <input class="form-control mr-sm-2" name="content" type="text" placeholder="Tìm kiếm" value="<%= content%>">
+            <% if (status.equals("active")) { %>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="active" checked="checked">Active
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="deactive">Deacive
+                </label>
+            </div>
+            <% } else if (status.equals("deactive")) { %>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="active">Active
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="deactive" checked="checked">Deacive
+                </label>
+            </div>
+            <% } else { %>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="active">Active
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="deactive">Deacive
+                </label>
+            </div>
+            <% } %>
             <button type="submit" class="btn btn-success"><i class="fas fa-search"></i></button>
         </form>
-        <br>
-        <input class="form-control" id="myInput" type="text" placeholder="Tìm trong trang..">
+        <!--        <br>
+                <input class="form-control" id="myInput" type="text" placeholder="Tìm trong trang..">-->
         <br>
         <table class="table table-bordered table-custom">
             <thead>
@@ -105,7 +147,7 @@
                     <td><%= MyUtils.priceToString(productEntity.getPrice())%> VNĐ</td>
                     <td><img src="<%= productEntity.getPricture()%>" style="width: 90px"></td>
                     <td><%= productEntity.getDescription()%></td>
-                    <td><%= productEntity.getStatus() == 1 ? "Active" : "Deactive" %></td>
+                    <td><%= productEntity.getStatus() == 1 ? "Active" : "Deactive"%></td>
                     <td><%= productEntity.getLastmodifier()%></td>
                     <td><a class="btn btn-primary" href="dashboard?service=ProductManger&subservice=edit&id=<%= productEntity.getId()%>">Update</a></td>
                     <td><button class="delete btn btn-danger" id="<%= productEntity.getId()%>">Delete</button></td>
@@ -117,25 +159,25 @@
         <div class="btn-group">
             <% if (productEntitys.size() != 0) { %>
             <% if (pageInt != 1) {%>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt - 1%>" class="btn"><</a>
+            <button class="btn btn-page" name="<%= pageInt - 1%>"><</button>
             <% }%>
             <% if (pageInt > 3) {%>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt - 3%>" class="btn"><%= pageInt - 3%></a>
+            <button class="btn btn-page" name="<%= pageInt - 3%>"><%= pageInt - 3%></button>
             <% }%>
             <% if (pageInt > 2) {%>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt - 2%>" class="btn"><%= pageInt - 2%></a>
+            <button class="btn btn-page" name="<%= pageInt - 2%>"><%= pageInt - 2%></button>
             <% }%>
             <% if (pageInt > 1) {%>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt - 1%>" class="btn"><%= pageInt - 1%></a>
+            <button class="btn btn-page" name="<%= pageInt - 1%>"><%= pageInt - 1%></button>
             <% }%>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt%>" class="btn btn-primary"><%= pageInt%></a>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt + 1%>" class="btn"><%= pageInt + 1%></a>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt + 2%>" class="btn"><%= pageInt + 2%></a>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt + 3%>" class="btn"><%= pageInt + 3%></a>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt + 1%>" class="btn">></a>
+            <button class="btn btn-primary btn-page" name="<%= pageInt%>"><%= pageInt%></button>
+            <button class="btn btn-page" name="<%= pageInt + 1%>"><%= pageInt + 1%></button>
+            <button class="btn btn-page" name="<%= pageInt + 2%>"><%= pageInt + 2%></button>
+            <button class="btn btn-page" name="<%= pageInt + 3%>"><%= pageInt + 3%></button>
+            <button class="btn btn-page" name="<%= pageInt + 1%>">></button>
             <% } else {%>
-            <a href="dashboard?service=ProductManger&page=<%= pageInt - 1%>" class="btn"><</a>
-            <a href="dashboard?service=ProductManger&page=1" class="btn">1</a>
+            <button class="btn btn-primary btn-page" name="<%= pageInt - 1%>"><</button>
+            <button class="btn btn-primary btn-page" name="1">1</button>
             <% }%>
         </div>
 
@@ -154,7 +196,7 @@
             $("#notifyModal .modal-body").html(message);
             $("#notifyModal").modal({backdrop: "static"});
         }
-        
+
         $(".delete").on('click', function () {
             var id = $(this).attr("id");
             $.ajax({
@@ -174,7 +216,7 @@
                 });
             });
         });
-        
+
         $(document).ready(function () {
             $("#myInput").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
@@ -182,6 +224,20 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
+        });
+
+        $(".btn-page").on('click', function () {
+            var page = $(this).attr("name");
+            var url = new URL(window.location.href);
+            var subservice = url.searchParams.get("subservice");
+            var content = url.searchParams.get("content");
+            var status = url.searchParams.get("status");
+
+            if (subservice != "search") {
+                window.location.href = document.location.origin + "/dashboard?service=ProductManger&page=" + page;
+            } else {
+                window.location.href = document.location.origin + "/dashboard?service=ProductManger&subservice=search&content=" + content + "&status=" + status + "&page=" + page;
+            }
         });
     </script>
 </html>

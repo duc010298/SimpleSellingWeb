@@ -156,11 +156,20 @@ public class InvoiceDao {
                 }
             }
             return true;
-        } else if ((status.equals("1") || status.equals("0")) && currentStatus.equals("2") ) {
+        } else if ((status.equals("1") || status.equals("0")) && currentStatus.equals("2")) {
             //cong quantity
             ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = new InvoiceDetailDao().getDetailById(id);
             for (InvoiceDetailEntity detailEntity : invoiceDetailEntitys) {
                 if (!new ProductDao().increaseQuantity(detailEntity.getProductId(), detailEntity.getQuantity())) {
+                    return false;
+                }
+            }
+            return true;
+        } else if (status.equals("3") && currentStatus.equals("1")) {
+            //tru quantity
+            ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = new InvoiceDetailDao().getDetailById(id);
+            for (InvoiceDetailEntity detailEntity : invoiceDetailEntitys) {
+                if (!new ProductDao().reduceQuantity(detailEntity.getProductId(), detailEntity.getQuantity())) {
                     return false;
                 }
             }

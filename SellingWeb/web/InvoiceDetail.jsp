@@ -17,6 +17,7 @@
 <% CustomerEntity customerEntity = (CustomerEntity) request.getAttribute("customerEntity"); %>
 <% ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = (ArrayList<InvoiceDetailEntity>) request.getAttribute("invoiceDetailEntitys"); %>
 <% ArrayList<ProductEntity> productEntitys = (ArrayList<ProductEntity>) request.getAttribute("productEntitys");%>
+<% boolean canAccept = true;%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -172,6 +173,12 @@
         $("#changeStatus").on('click', function () {
             var status = $("#status").val();
             //validate quantity
+        <% if (canAccept) { %>
+                if(status == 1 || status == 2) {
+                    notify("Lỗi", "Bạn không thể đổi trạng thái, số lượng hàng trong kho không đủ");
+                    return;
+                }
+        <% }%>
 
             var url = new URL(window.location.href);
             var id = url.searchParams.get("id");

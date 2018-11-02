@@ -110,7 +110,7 @@ public class DashBoardController extends HttpServlet {
                             request.setAttribute("page", pageInt);
                             ArrayList<ProductEntity> productEntitys = new ProductDao().getProductByPageAndSearch(pageInt, content, status);
                             request.setAttribute("productEntitys", productEntitys);
-                            
+
                             request.setAttribute("content", content);
                             request.setAttribute("status", status);
                             RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/ProductManager.jsp");
@@ -164,6 +164,22 @@ public class DashBoardController extends HttpServlet {
                             request.setAttribute("invoiceDetailEntitys", invoiceDetailEntitys);
                             request.setAttribute("productEntitys", productEntitys);
                             RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/InvoiceDetail.jsp");
+                            dispatch.forward(request, response);
+                        } else if (subservice.equals("search")) {
+                            String content = request.getParameter("content");
+                            String page = request.getParameter("page");
+                            String status = request.getParameter("status");
+                            int pageInt;
+                            try {
+                                pageInt = Integer.parseInt(page);
+                            } catch (NumberFormatException ex) {
+                                pageInt = 1;
+                            }
+                            request.setAttribute("page", pageInt);
+                            
+                            ArrayList<InvoiceEntity> invoiceEntitys = new InvoiceDao().getInvoiceByPageAndSearch(pageInt, content, status);
+                            request.setAttribute("invoiceEntitys", invoiceEntitys);
+                            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/InvoiceManger.jsp");
                             dispatch.forward(request, response);
                         }
                         return;

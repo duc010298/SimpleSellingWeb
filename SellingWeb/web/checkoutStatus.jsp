@@ -25,7 +25,6 @@
                 <a href="index" class="btn btn-primary"><i class="fas fa-home"></i> Về trang chủ</a>
             </div>
         </div>
-        <jsp:include page="/header" />
     </body>
     <script>
         var timeleft = 15;
@@ -33,7 +32,6 @@
             document.getElementById("countdown").innerHTML = --timeleft;
             if (timeleft <= 0) {
                 clearInterval(downloadTimer);
-            } else {
                 window.location.href = "index";
             }
         }, 1000);

@@ -96,6 +96,77 @@ public class InvoiceDao {
         return invoiceEntitys;
     }
 
+    public ArrayList<InvoiceEntity> getInvoiceByPageAndSearch(int page, String content, String statusStr) {
+        ArrayList<InvoiceEntity> invoiceEntitys = new ArrayList<>();
+        if (content == null) {
+            return invoiceEntitys;
+        }
+        if (content.equals("") && statusStr == null) {
+            return invoiceEntitys;
+        }
+        if (content.equals("") && !statusStr.equals("active") && !statusStr.equals("deactive")) {
+            return invoiceEntitys;
+        }
+        int begin;
+        int end;
+        page--;
+        if (page == 0) {
+            begin = 1;
+            end = 20;
+        } else {
+            begin = page * 20 + 1;
+            end = begin + 19;
+        }
+
+        String sql = "SELECT id,customerId,date,name,address,phone,total,status FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY date DESC) AS RowNum FROM Invoice where name like ? or address like ? or phone like ?) AS MyTable WHERE MyTable.RowNum BETWEEN ? AND ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setNString(1, "%" + content + "%");
+            pre.setNString(2, "%" + content + "%");
+            pre.setNString(3, "%" + content + "%");
+            pre.setInt(4, begin);
+            pre.setInt(5, end);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                Timestamp date = rs.getTimestamp("date");
+                String customerId = rs.getString("customerId");
+                String username = null;
+                CustomerEntity customerEntity = new CustomerDao().getInfoFromId(customerId);
+                username = customerEntity.getUsername();
+                String name = rs.getNString("name");
+                String address = rs.getNString("address");
+                String phone = rs.getString("phone");
+                float total = rs.getFloat("total");
+                int status = rs.getInt("status");
+                invoiceEntitys.add(new InvoiceEntity(id, date, username, name, address, phone, total, status));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InvoiceDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (!statusStr.equals("active") && !statusStr.equals("deactive")) {
+            ArrayList<InvoiceEntity> invoiceEntitys2 = new ArrayList<>();
+            if(statusStr.equals("active")) {
+                for(InvoiceEntity invoiceEntity: invoiceEntitys) {
+                    if(invoiceEntity.getStatus() == 1) {
+                        invoiceEntitys2.add(invoiceEntity);
+                    }
+                }
+            } else {
+                for(InvoiceEntity invoiceEntity: invoiceEntitys) {
+                    if(invoiceEntity.getStatus() == 0) {
+                        invoiceEntitys2.add(invoiceEntity);
+                    }
+                }
+            }
+            
+            return invoiceEntitys2;
+        }
+
+        return invoiceEntitys;
+    }
+
     public InvoiceEntity getInvoiceById(String id) {
         InvoiceEntity invoiceEntity = null;
         String sql = "select date, customerId, name, address, phone, total, status from Invoice where id=?";
@@ -177,5 +248,28 @@ public class InvoiceDao {
         } else {
             return true;
         }
+    }
+
+    public ArrayList<InvoiceEntity> getInvoiceByCustomerId(String customerId) {
+        ArrayList<InvoiceEntity> invoiceEntitys = new ArrayList<>();
+        String sql = "select id, date, name, address, phone, total, status from Invoice where customerId=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, customerId);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                Timestamp date = rs.getTimestamp("date");
+                String name = rs.getNString("name");
+                String address = rs.getNString("address");
+                String phone = rs.getString("phone");
+                float total = rs.getFloat("total");
+                int status = rs.getInt("status");
+                invoiceEntitys.add(new InvoiceEntity(id, date, name, address, phone, total, status));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InvoiceDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return invoiceEntitys;
     }
 }

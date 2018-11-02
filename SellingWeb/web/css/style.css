@@ -156,3 +156,9 @@ pre {
     grid-template-columns: 50% 50%;
     grid-column-gap: 5px;
 }
+
+.grid-9 {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-column-gap: 5px;
+}

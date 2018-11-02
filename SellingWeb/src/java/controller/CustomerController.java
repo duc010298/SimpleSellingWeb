@@ -6,9 +6,16 @@
 package controller;
 
 import dao.CustomerDao;
+import dao.InvoiceDao;
+import dao.InvoiceDetailDao;
+import dao.ProductDao;
 import entity.CustomerEntity;
+import entity.InvoiceDetailEntity;
+import entity.InvoiceEntity;
+import entity.ProductEntity;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,11 +48,36 @@ public class CustomerController extends HttpServlet {
         String service = request.getParameter("service");
         if (service != null) {
             if (service.equals("info")) {
-                String id = request.getParameter("id");
+                String id = customerEntity.getId();
                 customerEntity = new CustomerDao().getInfoFromId(id);
                 request.setAttribute("customerEntity", customerEntity);
+                ArrayList<InvoiceEntity> invoiceEntitys = new InvoiceDao().getInvoiceByCustomerId(id);
+                request.setAttribute("invoiceEntitys", invoiceEntitys);
                 RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/CustomerInfo.jsp");
                 dispatch.forward(request, response);
+                return;
+            } else if (service.equals("invoiceDetail")) {
+                String customerId = customerEntity.getId();
+                String invoiceId = request.getParameter("id");
+                ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = new InvoiceDetailDao().getDetailByIdAndCustomerId(invoiceId, customerId);
+                if(invoiceDetailEntitys.isEmpty()) {
+                    response.sendError(404, "Không tìm thấy trang bạn yêu cầu");
+                    return;
+                }
+                InvoiceEntity invoiceEntity = new InvoiceDao().getInvoiceById(invoiceId);
+                ArrayList<ProductEntity> productEntitys = new ArrayList<>();
+                for (InvoiceDetailEntity detailEntity : invoiceDetailEntitys) {
+                    ProductEntity entity = new ProductDao().getProductById(detailEntity.getProductId());
+                    productEntitys.add(entity);
+                }
+                
+                request.setAttribute("invoiceDetailEntitys", invoiceDetailEntitys);
+                request.setAttribute("invoiceEntity", invoiceEntity);
+                request.setAttribute("productEntitys", productEntitys);
+                
+                RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/InvoiceDetailOnCustomer.jsp");
+                dispatch.forward(request, response);
+                return;
             }
         } else {
             response.sendError(404);

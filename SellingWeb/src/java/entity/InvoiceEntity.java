@@ -33,6 +33,16 @@ public class InvoiceEntity {
         this.status = status;
     }
 
+    public InvoiceEntity(String id, Timestamp date, String name, String address, String phone, float total, int status) {
+        this.id = id;
+        this.date = date;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.total = total;
+        this.status = status;
+    }
+
     public String getId() {
         return id;
     }

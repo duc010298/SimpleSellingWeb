@@ -71,4 +71,24 @@ public class InvoiceDetailDao {
         }
         return invoiceDetailEntitys;
     }
+    
+    public ArrayList<InvoiceDetailEntity> getDetailByIdAndCustomerId(String InvoiceId, String customerId) {
+        ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = new ArrayList<>();
+        String sql = "select a.productId, a.quantity, a.price from InvoiceDetail as a inner join Invoice as b on a.invoiceId=b.id and a.invoiceId=? and b.customerId=?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, InvoiceId);
+            pre.setString(2, customerId);
+            ResultSet rs = pre.executeQuery();
+            while(rs.next()) {
+                String productId = rs.getString("productId");
+                int quantity = rs.getInt("quantity");
+                float price = rs.getFloat("price");
+                invoiceDetailEntitys.add(new InvoiceDetailEntity(InvoiceId, productId, quantity, price));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InvoiceDetailDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return invoiceDetailEntitys;
+    }
 }

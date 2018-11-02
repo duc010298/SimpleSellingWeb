@@ -4,9 +4,13 @@
     Author     : Đỗ Trung Đức
 --%>
 
+<%@page import="util.MyUtils"%>
+<%@page import="entity.InvoiceEntity"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="entity.CustomerEntity"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <% CustomerEntity customerEntity = (CustomerEntity) request.getAttribute("customerEntity");%>
+<% ArrayList<InvoiceEntity> invoiceEntitys = (ArrayList<InvoiceEntity>) request.getAttribute("invoiceEntitys");%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -82,8 +86,38 @@
         <div class="jumbotron">
             <h3>Danh sách đơn hàng</h3>
             <hr>
-
-            <!--to be continued-->
+            <table class="table table-bordered table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th>Ngày tạo</th>
+                        <th>Tên người nhận</th>
+                        <th>Địa chỉ giao hàng</th>
+                        <th>Số điện thoại người nhận</th>
+                        <th>Tổng số tiền</th>
+                        <th>Trạng thái đơn hàng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (InvoiceEntity entity : invoiceEntitys) {%>
+                    <tr name="<%= entity.getId()%>">
+                        <td><%= entity.getDate()%></td>
+                        <td><%= entity.getName()%></td>
+                        <td><%= entity.getAddress()%></td>
+                        <td><%= entity.getPhone()%></td>
+                        <td><%= MyUtils.priceToString(entity.getTotal())%> VNĐ</td>
+                        <% if (entity.getStatus() == 1) { %>
+                        <td>Chưa liên hệ</td>
+                        <% } else if (entity.getStatus() == 2) { %>
+                        <td>Đang giao hàng</td>
+                        <% } else if (entity.getStatus() == 3) { %>
+                        <td>Đã thanh toán</td>
+                        <% } else if (entity.getStatus() == 0) { %>
+                        <td>Đã hủy bỏ</td>
+                        <% } %>
+                    </tr>
+                    <% }%>
+                </tbody>
+            </table>
         </div>
         <%@include file="footer.jsp" %>
     </body>
@@ -149,5 +183,10 @@
             });
             return false;
         }
+
+        $("tbody>tr").on('click', function () {
+            var invoiceId = $(this).attr("name");
+            window.location.href = "customer?service=invoiceDetail&id=" + invoiceId;
+        });
     </script>
 </html>

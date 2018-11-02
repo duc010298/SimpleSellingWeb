@@ -12,6 +12,14 @@
 <% AdminEntity adminEntity = (AdminEntity) request.getAttribute("admin");%>
 <% ArrayList<InvoiceEntity> invoiceEntitys = (ArrayList<InvoiceEntity>) request.getAttribute("invoiceEntitys");%>
 <% int pageInt = (int) request.getAttribute("page");%>
+<% String status = (String) request.getAttribute("status"); %>
+<% String content = (String) request.getAttribute("content"); %>
+<% if (content == null) {
+        content = "";
+    } %>
+<% if (status == null) {
+        status = "";
+    }%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -71,7 +79,47 @@
         </nav>
 
         <h1>Quản lí hóa đơn</h1>
-        <input class="form-control" id="myInput" type="text" placeholder="Tìm trong trang..">
+        <form class="form-inline" method="get" action="dashboard">
+            <input type="text" name="service" value="InvoiceManger" hidden>
+            <input type="text" name="subservice" value="search" hidden>
+            <input class="form-control mr-sm-2" name="content" type="text" placeholder="Tìm kiếm" value="<%= content%>">
+            <% if (status.equals("active")) { %>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="active" checked="checked">Active
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="deactive">Deacive
+                </label>
+            </div>
+            <% } else if (status.equals("deactive")) { %>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="active">Active
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="deactive" checked="checked">Deacive
+                </label>
+            </div>
+            <% } else { %>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="active">Active
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="status" value="deactive">Deacive
+                </label>
+            </div>
+            <% } %>
+            <button type="submit" class="btn btn-success"><i class="fas fa-search"></i></button>
+        </form>
+        <!--        <input class="form-control" id="myInput" type="text" placeholder="Tìm trong trang..">-->
         <br>
         <table class="table table-bordered table-custom table-hover">
             <thead>
@@ -151,11 +199,18 @@
             var id = $(this).attr("id");
             window.location.href = "dashboard?service=InvoiceManger&subservice=InvoiceDetail&id=" + id;
         });
-        
+
         $(".btn-page").on('click', function () {
             var page = $(this).attr("name");
             var url = new URL(window.location.href);
-            window.location.href = document.location.origin + "/dashboard?service=InvoiceManger&page=" + page;
+            var subservice = url.searchParams.get("subservice");
+            var content = url.searchParams.get("content");
+            var status = url.searchParams.get("status");
+            if (subservice != "search") {
+                window.location.href = document.location.origin + "/dashboard?service=InvoiceManger&page=" + page;
+            } else {
+                window.location.href = document.location.origin + "/dashboard?service=InvoiceManger&subservice=search&content=" + content + "&status=" + status + "&page=" + page;
+            }
         });
     </script>
 </html>

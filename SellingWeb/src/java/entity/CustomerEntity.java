@@ -44,6 +44,15 @@ public class CustomerEntity {
         this.phone = phone;
         this.username = username;
     }
+    
+    public CustomerEntity(String id, String name, String address, String phone, String username, boolean status) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.username = username;
+        this.status = status;
+    }
 
     public String getId() {
         return id;

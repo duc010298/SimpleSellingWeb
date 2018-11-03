@@ -141,6 +141,39 @@ public class DashBoardController extends HttpServlet {
                     return;
                 }
                 case "CustomerManager": {
+                    String subservice = request.getParameter("subservice");
+                    if (subservice != null) {
+                        if (subservice.equals("search")) {
+                            String content = request.getParameter("content");
+                            String page = request.getParameter("page");
+                            String status = request.getParameter("status");
+                            int pageInt;
+                            try {
+                                pageInt = Integer.parseInt(page);
+                            } catch (NumberFormatException ex) {
+                                pageInt = 1;
+                            }
+                            request.setAttribute("page", pageInt);
+                            ArrayList<CustomerEntity> customerEntitys = new CustomerDao().getCustomerByPageAndSearch(pageInt, content, status);
+                            request.setAttribute("customerEntitys", customerEntitys);
+
+                            request.setAttribute("content", content);
+                            request.setAttribute("status", status);
+                            RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/CustomerManager.jsp");
+                            dispatch.forward(request, response);
+                            return;
+                        }
+                    }
+                    String page = request.getParameter("page");
+                    int pageInt;
+                    try {
+                        pageInt = Integer.parseInt(page);
+                    } catch (NumberFormatException ex) {
+                        pageInt = 1;
+                    }
+                    request.setAttribute("page", pageInt);
+                    ArrayList<CustomerEntity> customerEntitys = new CustomerDao().getCustomerByPage(pageInt);
+                    request.setAttribute("customerEntitys", customerEntitys);
                     RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/CustomerManager.jsp");
                     dispatch.forward(request, response);
                     break;
@@ -151,7 +184,7 @@ public class DashBoardController extends HttpServlet {
                         if (subservice.equals("InvoiceDetail")) {
                             String id = request.getParameter("id");
                             InvoiceEntity invoiceEntity = new InvoiceDao().getInvoiceById(id);
-                            CustomerEntity customerEntity = new CustomerDao().getInfoFromId(invoiceEntity.getCustomerId());
+                            CustomerEntity customerEntity = new CustomerDao().getInfoFromIdByAdmin(invoiceEntity.getCustomerId());
                             ArrayList<InvoiceDetailEntity> invoiceDetailEntitys = new InvoiceDetailDao().getDetailById(id);
                             ArrayList<ProductEntity> productEntitys = new ArrayList<>();
                             for (InvoiceDetailEntity detailEntity : invoiceDetailEntitys) {
@@ -176,7 +209,7 @@ public class DashBoardController extends HttpServlet {
                                 pageInt = 1;
                             }
                             request.setAttribute("page", pageInt);
-                            
+
                             ArrayList<InvoiceEntity> invoiceEntitys = new InvoiceDao().getInvoiceByPageAndSearch(pageInt, content, status);
                             request.setAttribute("invoiceEntitys", invoiceEntitys);
                             RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/InvoiceManger.jsp");
@@ -420,6 +453,21 @@ public class DashBoardController extends HttpServlet {
                     String status = request.getParameter("status");
                     String id = request.getParameter("id");
                     if (new InvoiceDao().updateStatusInvoice(id, status)) {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Đổi trạng thái thành công");
+                        }
+                    } else {
+                        try (PrintWriter out = response.getWriter()) {
+                            out.print("Đổi trạng thái không thành công");
+                        }
+                    }
+                    break;
+                }
+                case "changeStatusCustomer": {
+                    String id = request.getParameter("id");
+                    String statusStr = request.getParameter("status");
+                    boolean status = Boolean.parseBoolean(statusStr);
+                    if (new CustomerDao().changeStatus(id, status)) {
                         try (PrintWriter out = response.getWriter()) {
                             out.print("Đổi trạng thái thành công");
                         }

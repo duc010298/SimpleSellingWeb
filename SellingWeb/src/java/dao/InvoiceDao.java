@@ -81,7 +81,7 @@ public class InvoiceDao {
                 Timestamp date = rs.getTimestamp("date");
                 String customerId = rs.getString("customerId");
                 String username = null;
-                CustomerEntity customerEntity = new CustomerDao().getInfoFromId(customerId);
+                CustomerEntity customerEntity = new CustomerDao().getInfoFromIdByAdmin(customerId);
                 username = customerEntity.getUsername();
                 String name = rs.getNString("name");
                 String address = rs.getNString("address");
@@ -145,7 +145,7 @@ public class InvoiceDao {
             Logger.getLogger(InvoiceDao.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (!statusStr.equals("active") && !statusStr.equals("deactive")) {
+        if (statusStr.equals("active") || statusStr.equals("deactive")) {
             ArrayList<InvoiceEntity> invoiceEntitys2 = new ArrayList<>();
             if(statusStr.equals("active")) {
                 for(InvoiceEntity invoiceEntity: invoiceEntitys) {

@@ -24,30 +24,28 @@
     <body>
         <jsp:include page="/header" />
         <br>
-        <h2>Chi tiết sản phẩm</h2>
-        <div class="grid-3">
-            <div class="product-box-detail">
-                <img src="<%= productEntity.getPricture()%>" id="img-product-detail" class="img-product" alt="simple">
-            </div>
-            <div class="product-box-detail">
-                <div>
-                    <h2 id="product-name-detail"><%= productEntity.getName()%></h2>
-                    <p class="product-price-2" id="product-detail-price"><%= MyUtils.priceToString(productEntity.getPrice())%> VNĐ</p>
-                    <br>
-                    <pre class="description"><%= productEntity.getDescription()%></pre>
-                    <br>
-                    <% if (productEntity.getQuantity() != 0) {%>
-                    <p class="product-status-active"><i class="fas fa-shopping-bag"></i> Còn hàng</p>
-                    <button type="button" class="btn btn-primary btn-add-cart-2" id="<%= productEntity.getId()%>"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
-                    <% } else { %>
-                    <p class="product-status-deactive"><i class="fas fa-shopping-bag"></i> Liên hệ</p>
-                    <button type="button" class="btn btn-add-cart" disabled><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
-                    <% }%>
+        <div class="container">
+            <h2>Chi tiết sản phẩm</h2>
+            <div class="grid-3">
+                <div class="product-box-detail">
+                    <img src="<%= productEntity.getPricture()%>" id="img-product-detail" class="img-product" alt="simple">
+                </div>
+                <div class="product-box-detail">
+                    <div>
+                        <h2 id="product-name-detail"><%= productEntity.getName()%></h2>
+                        <p class="product-price-2" id="product-detail-price"><%= MyUtils.priceToString(productEntity.getPrice())%> VNĐ</p>
+                        <pre class="description"><%= productEntity.getDescription()%></pre>
+                        <% if (productEntity.getQuantity() != 0) {%>
+                        <p class="product-status-active-2"><i class="fas fa-shopping-bag"></i> Còn hàng</p>
+                        <button type="button" class="btn btn-primary btn-add-cart-2 btn-add-cart-detail" id="<%= productEntity.getId()%>"><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
+                        <% } else { %>
+                        <p class="product-status-deactive-2"><i class="fas fa-shopping-bag"></i> Liên hệ</p>
+                        <button type="button" class="btn btn-add-cart-2 btn-add-cart-detail" disabled><i class="fas fa-cart-plus"></i> Cho vào giỏ</button>
+                        <% }%>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="container">
+            <br>
             <!--Sản phẩm liên quan-->
             <h3><i class="fas fa-calendar-alt"></i> Sản phẩm nổi trội</h3>
             <div class="grid-2">

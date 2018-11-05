@@ -133,7 +133,7 @@
                         <th>Ảnh</th>
                         <th>Tên sản phẩm</th>
                         <th>Giá</th>
-                        <th>Số lượng</th>
+                        <th>Số lượng trong hóa đơn</th>
                         <th>Số còn trong kho</th>
                         <th>Tổng tiền</th>
                     </tr>
@@ -154,6 +154,9 @@
                         <td><%= detailEntity.getQuantity()%></td>
                         <td><%= productEntity.getQuantity()%></td>
                         <td><%= MyUtils.priceToString(detailEntity.getPrice() * detailEntity.getQuantity())%> VNĐ</td>
+                        <% if(detailEntity.getQuantity() > productEntity.getQuantity()) { %>
+                        <% canAccept = false; %>
+                        <% } %>
                     </tr>
                     <% }%>
                 </tbody>
@@ -173,8 +176,8 @@
         $("#changeStatus").on('click', function () {
             var status = $("#status").val();
             //validate quantity
-        <% if (canAccept) { %>
-            if (status == 1 || status == 2) {
+        <% if (!canAccept) { %>
+            if (status == 2 || status == 3) {
                 notify("Lỗi", "Bạn không thể đổi trạng thái, số lượng hàng trong kho không đủ");
                 return;
             }
